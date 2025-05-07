@@ -182,6 +182,8 @@ remote func despawn_player(player_id: int) -> void:
 func send_player_state(player_state: Dictionary) -> void:
 	if !testing:
 		if Global.in_game:
+			# note
+			# player_state = {"T": Server.client_clock, "I": input_array, "P": self.global_position}
 			rpc_unreliable_id(1, "received_player_state", player_state)
 
 remote func receive_world_state(world_state: PoolByteArray) -> void:
