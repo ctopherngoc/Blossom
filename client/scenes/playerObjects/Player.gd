@@ -63,12 +63,16 @@ func _physics_process(delta):
 		Global.player_position = self.global_position
 
 func define_player_state(input_array):
-	player_state = {"T": Server.client_clock, "P": input_array}
+	# changed "P" to "I" for input and added "P" for position 
+	player_state = {"T": Server.client_clock, "I": input_array, "P": self.global_position}
 
 	# if not afk, add input and position to tick key
+	# same values player_state dict
 	var input_dictionary = {
 		"T" : player_state["T"],
-		"P": self.global_position,
+		#"P": self.global_position,
+		"P": player_state["P"],
+		"I": player_state["I"],
 		}
 	Global.input_queue.append(input_dictionary)
 	Server.send_player_state(player_state)
