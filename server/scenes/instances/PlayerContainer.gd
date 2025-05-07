@@ -14,6 +14,9 @@ onready var attack_range = $attack_range
 var db_info = {}
 onready var loggedin = true
 
+var ghost_template =  preload("res://scenes/instances/GhostContainer.tscn")
+onready var ghost
+
 # post firestore convert
 # possible hashmap or references
 ###############
@@ -71,13 +74,12 @@ onready var animation_state = {
 onready var recon_arr = {
 	"input_arr": [],
 	"velocity": Vector2(0,0),
-	"mns": null,
+	#"mns": null,
 	"end_pos": Vector2(0,0),
 	"m_vector": null,
 }
-
-onready var equip_array = ["headgear", "top", "bottom", "rweapon", "lweapon", "eyeacc", "earring", "faceacc", "glove", "tattoo"]
 ########
+onready var equip_array = ["headgear", "top", "bottom", "rweapon", "lweapon", "eyeacc", "earring", "faceacc", "glove", "tattoo"]
 
 func _physics_process(delta: float) -> void:
 	if loggedin:
@@ -277,8 +279,33 @@ func movement_loop(delta: float) -> void:
 	recon_arr["velocity"] = velocity
 	# warning-ignore:return_value_discarded
 	recon_arr["start_pos"] = self.global_position
-	move_and_slide(velocity, Vector2.UP)
-	recon_arr["mns"] = move_and_slide(velocity, Vector2.UP)
+	##############
+	# add simulation
+#	load ghostcontainer
+	load_ghost()
+#	move ghostcontainer
+	var ghost_mns = ghost.move_and_slide(velocity, Vector2.UP)
+#	get position
+	var ghost_position = ghost.global_position
+	var client_position = input_queue[0].P
+#	compare position
+	# should only compare x cause falling and is difficult to get perfect
+	if abs(ghost_position - client_position) > 1:
+		self.global_position = ghost_position
+		#recon_arr["mns"] = ghost_mns
+	else:
+		self.global_position = client_position
+		#recon_arr["mns"] = move_and_slide(velocity, Vector2.UP)
+	input_queue.pop_front()
+	#queue free ghost
+	ghost.queue_free()
+#	
+#	else  -> set position to ghost position
+	##############
+	#move_and_slide(velocity, Vector2.UP)
+
+	# original 
+	#recon_arr["mns"] = move_and_slide(velocity, Vector2.UP)
 	recon_arr["end_pos"] = self.global_position
 
 	if is_on_floor() or !is_climbing:
@@ -289,10 +316,15 @@ func movement_loop(delta: float) -> void:
 	else:
 		animation_state["c"] = 0
 
+func load_ghost():
+	ghost = ghost_template.instance()
+	ghost.position = self.global_position
+	
 func get_movement_vector() -> Vector2:
 	var moveVector = Vector2.ZERO
 	if !input_queue.empty():
-		input = input_queue.pop_front()
+		#input = input_queue.pop_front()
+		input = input_queue[0]
 	else:
 		# [up, down, left, right, jump, loot]
 		input = [0,0,0,0,0,0]
