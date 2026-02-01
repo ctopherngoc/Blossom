@@ -24,7 +24,7 @@ func _ready() -> void:
 
 func start_server() -> void:
 	network.create_server(port, max_players)
-	get_tree().set_multiplayer_peer(network)
+	multiplayer.multiplayer_peer = network
 	print("Server Started")
 
 	network.connect("peer_connected", Callable(self, "_Peer_Connected"))
@@ -355,6 +355,7 @@ func move_player_container(player_id: int, player_container: CharacterBody2D, ma
 	ServerData.player_location[str(player_id)] = "/root/Server/World/Maps/" + str(map_id) + "/Node2D/Players"
 	var player = get_node("/root/Server/World/Maps/" + str(map_id) + "/Node2D/Players/" + str(player_id))
 	var map_node = get_node("/root/Server/World/Maps/%s" % str(map_id))
+	@warning_ignore("unused_variable")
 	var map_position = map_node.get_global_position()
 
 	if typeof(position) == TYPE_STRING and position == "spawn":
@@ -368,12 +369,14 @@ func get_player_data(player_id):
 	
 	var player_container = _Server_Get_Player_Container(player_id)
 	# warning-ignore:unused_variable
+	@warning_ignore("unused_variable")
 	var character_count = player_container.db_info
 
 @rpc("any_peer") func portal(portal_id):
 	var player_id = get_tree().get_remote_sender_id()
 	var player_container = _Server_Get_Player_Container(player_id)
 	# validate
+	@warning_ignore("shadowed_variable")
 	var portal = ServerData.player_location[str(player_id)].replace("Node2D/Players", "MapObjects/%s" % portal_id)
 	# get portal node
 	get_node(portal).over_lapping_bodies(player_id)
@@ -648,6 +651,7 @@ func save(path : String, thing_to_save):
 	
 	# check if has item
 	
+@warning_ignore("unused_parameter")
 func _unhandled_input(event):
 	pass
 
@@ -1002,6 +1006,7 @@ func update_attack_range(player) -> void:
 					print("player has item already")
 					break
 			else:
+				@warning_ignore("unassigned_variable")
 				if not player_container.current_character.inventory[type][index] and (not free or index < free):
 					print("index at %s" % index)
 					free = index
@@ -1102,6 +1107,7 @@ func update_attack_range(player) -> void:
 	print("made it out inventory slot check")
 	
 	reward_index = 0
+	@warning_ignore("unused_variable")
 	var item_reward_index = 0
 	while reward_index <= quest_data.reward.size() - 2:
 		if typeof(quest_data.reward[reward_index]) == TYPE_STRING and quest_data.reward[reward_index] == "experience":
