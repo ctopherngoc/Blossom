@@ -1,11 +1,11 @@
 extends Control
 
 
-onready var login_scene = preload("res://scenes/menuObjects/LoginScreen/LoginScreen.tscn")
+@onready var login_scene = preload("res://scenes/menuObjects/LoginScreen/LoginScreen.tscn")
 
 func _ready() -> void:
 	var sfx_index = AudioServer.get_bus_index("Master")
-	AudioServer.set_bus_volume_db(sfx_index, linear2db(0.10))
+	AudioServer.set_bus_volume_db(sfx_index, linear_to_db(0.10))
 
 func _on_Timer_timeout() -> void:
 	$AnimationPlayer.play("dissolve logo")
@@ -18,4 +18,4 @@ func _on_Timer2_timeout() -> void:
 
 func _on_AnimationPlayer_animation_finished(anim_name: String) -> void:
 	if anim_name == "dissolve":
-		SceneHandler.change_scene("login")
+		SceneHandler.change_scene_to_file("login")

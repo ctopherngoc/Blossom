@@ -1,16 +1,16 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://assets/UI/background/window_background2.png" type="Texture" id=1]
+[ext_resource path="res://assets/UI/background/window_background2.png" type="Texture2D" id=1]
 [ext_resource path="res://scenes/userInerface/InGameUI/PlayerStats.gd" type="Script" id=2]
-[ext_resource path="res://scenes/userInerface/InGameUI/stat_menu_font_theme.tres" type="DynamicFont" id=3]
-[ext_resource path="res://scenes/userInerface/InGameUI/stat_menu_dynamic_font.tres" type="DynamicFont" id=4]
+[ext_resource path="res://scenes/userInerface/InGameUI/stat_menu_font_theme.tres" type="FontFile" id=3]
+[ext_resource path="res://scenes/userInerface/InGameUI/stat_menu_dynamic_font.tres" type="FontFile" id=4]
 
 [node name="PlayerStats" type="Control"]
 anchor_bottom = 0.00972222
-margin_right = 229.0
-margin_bottom = 168.0
-rect_min_size = Vector2( 229, 155 )
-rect_scale = Vector2( 1.00723, 0.998023 )
+offset_right = 229.0
+offset_bottom = 168.0
+custom_minimum_size = Vector2( 229, 155 )
+scale = Vector2( 1.00723, 0.998023 )
 size_flags_horizontal = 0
 size_flags_vertical = 0
 script = ExtResource( 2 )
@@ -21,7 +21,7 @@ __meta__ = {
 [node name="NinePatchRect" type="NinePatchRect" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 229, 155 )
+custom_minimum_size = Vector2( 229, 155 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 1 )
@@ -33,10 +33,10 @@ patch_margin_bottom = 16
 [node name="ColorRect" type="ColorRect" parent="NinePatchRect"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 5.0
-margin_top = 5.0
-margin_right = -5.0
-margin_bottom = -5.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
 color = Color( 0, 0, 0, 1 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="NinePatchRect"]
@@ -44,163 +44,163 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -118.0
-margin_top = -75.75
-margin_right = 114.0
-margin_bottom = 76.25
+offset_left = -118.0
+offset_top = -75.75
+offset_right = 114.0
+offset_bottom = 76.25
 alignment = 1
 __meta__ = {
 "_edit_use_anchors_": true
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="NinePatchRect/HBoxContainer"]
-margin_left = 26.0
-margin_right = 206.0
-margin_bottom = 152.0
+offset_left = 26.0
+offset_right = 206.0
+offset_bottom = 152.0
 
 [node name="Label" type="Label" parent="NinePatchRect/HBoxContainer/VBoxContainer"]
-margin_right = 180.0
-margin_bottom = 22.0
-custom_fonts/font = ExtResource( 3 )
+offset_right = 180.0
+offset_bottom = 22.0
+theme_override_fonts/font = ExtResource( 3 )
 text = "Stats"
 align = 1
 valign = 1
 
 [node name="Strength" type="HBoxContainer" parent="NinePatchRect/HBoxContainer/VBoxContainer"]
-margin_top = 26.0
-margin_right = 180.0
-margin_bottom = 48.0
+offset_top = 26.0
+offset_right = 180.0
+offset_bottom = 48.0
 
 [node name="Name" type="Label" parent="NinePatchRect/HBoxContainer/VBoxContainer/Strength"]
-margin_right = 70.0
-margin_bottom = 22.0
-custom_fonts/font = ExtResource( 4 )
+offset_right = 70.0
+offset_bottom = 22.0
+theme_override_fonts/font = ExtResource( 4 )
 text = "Strength"
 
 [node name="Value" type="Label" parent="NinePatchRect/HBoxContainer/VBoxContainer/Strength"]
-margin_left = 74.0
-margin_right = 156.0
-margin_bottom = 22.0
+offset_left = 74.0
+offset_right = 156.0
+offset_bottom = 22.0
 size_flags_horizontal = 3
-custom_fonts/font = ExtResource( 3 )
+theme_override_fonts/font = ExtResource( 3 )
 text = "5"
 align = 2
 valign = 1
 
 [node name="Button" type="Button" parent="NinePatchRect/HBoxContainer/VBoxContainer/Strength"]
-margin_left = 160.0
-margin_right = 180.0
-margin_bottom = 22.0
+offset_left = 160.0
+offset_right = 180.0
+offset_bottom = 22.0
 text = "+"
 
 [node name="Wisdom" type="HBoxContainer" parent="NinePatchRect/HBoxContainer/VBoxContainer"]
-margin_top = 52.0
-margin_right = 180.0
-margin_bottom = 74.0
+offset_top = 52.0
+offset_right = 180.0
+offset_bottom = 74.0
 
 [node name="Name" type="Label" parent="NinePatchRect/HBoxContainer/VBoxContainer/Wisdom"]
-margin_right = 65.0
-margin_bottom = 22.0
-custom_fonts/font = ExtResource( 3 )
+offset_right = 65.0
+offset_bottom = 22.0
+theme_override_fonts/font = ExtResource( 3 )
 text = "Wisdom"
 
 [node name="Value" type="Label" parent="NinePatchRect/HBoxContainer/VBoxContainer/Wisdom"]
-margin_left = 69.0
-margin_right = 156.0
-margin_bottom = 22.0
+offset_left = 69.0
+offset_right = 156.0
+offset_bottom = 22.0
 size_flags_horizontal = 3
-custom_fonts/font = ExtResource( 3 )
+theme_override_fonts/font = ExtResource( 3 )
 text = "5"
 align = 2
 valign = 1
 
 [node name="Button2" type="Button" parent="NinePatchRect/HBoxContainer/VBoxContainer/Wisdom"]
-margin_left = 160.0
-margin_right = 180.0
-margin_bottom = 22.0
+offset_left = 160.0
+offset_right = 180.0
+offset_bottom = 22.0
 text = "+"
 
 [node name="Dexterity" type="HBoxContainer" parent="NinePatchRect/HBoxContainer/VBoxContainer"]
-margin_top = 78.0
-margin_right = 180.0
-margin_bottom = 100.0
+offset_top = 78.0
+offset_right = 180.0
+offset_bottom = 100.0
 
 [node name="Name" type="Label" parent="NinePatchRect/HBoxContainer/VBoxContainer/Dexterity"]
-margin_right = 76.0
-margin_bottom = 22.0
-custom_fonts/font = ExtResource( 4 )
+offset_right = 76.0
+offset_bottom = 22.0
+theme_override_fonts/font = ExtResource( 4 )
 text = "Dexterity"
 
 [node name="Value" type="Label" parent="NinePatchRect/HBoxContainer/VBoxContainer/Dexterity"]
-margin_left = 80.0
-margin_right = 156.0
-margin_bottom = 22.0
+offset_left = 80.0
+offset_right = 156.0
+offset_bottom = 22.0
 size_flags_horizontal = 3
-custom_fonts/font = ExtResource( 4 )
+theme_override_fonts/font = ExtResource( 4 )
 text = "5"
 align = 2
 valign = 1
 
 [node name="Button3" type="Button" parent="NinePatchRect/HBoxContainer/VBoxContainer/Dexterity"]
-margin_left = 160.0
-margin_right = 180.0
-margin_bottom = 22.0
+offset_left = 160.0
+offset_right = 180.0
+offset_bottom = 22.0
 text = "+"
 
 [node name="Luck" type="HBoxContainer" parent="NinePatchRect/HBoxContainer/VBoxContainer"]
-margin_top = 104.0
-margin_right = 180.0
-margin_bottom = 126.0
+offset_top = 104.0
+offset_right = 180.0
+offset_bottom = 126.0
 
 [node name="Name" type="Label" parent="NinePatchRect/HBoxContainer/VBoxContainer/Luck"]
-margin_right = 38.0
-margin_bottom = 22.0
-custom_fonts/font = ExtResource( 3 )
+offset_right = 38.0
+offset_bottom = 22.0
+theme_override_fonts/font = ExtResource( 3 )
 text = "Luck"
 
 [node name="Value" type="Label" parent="NinePatchRect/HBoxContainer/VBoxContainer/Luck"]
-margin_left = 42.0
-margin_right = 156.0
-margin_bottom = 22.0
+offset_left = 42.0
+offset_right = 156.0
+offset_bottom = 22.0
 size_flags_horizontal = 3
-custom_fonts/font = ExtResource( 3 )
+theme_override_fonts/font = ExtResource( 3 )
 text = "5"
 align = 2
 valign = 1
 
 [node name="Button4" type="Button" parent="NinePatchRect/HBoxContainer/VBoxContainer/Luck"]
-margin_left = 160.0
-margin_right = 180.0
-margin_bottom = 22.0
+offset_left = 160.0
+offset_right = 180.0
+offset_bottom = 22.0
 text = "+"
 
 [node name="StatPoints" type="HBoxContainer" parent="NinePatchRect/HBoxContainer/VBoxContainer"]
-margin_top = 130.0
-margin_right = 180.0
-margin_bottom = 145.0
+offset_top = 130.0
+offset_right = 180.0
+offset_bottom = 145.0
 
 [node name="ColorRect" type="ColorRect" parent="NinePatchRect/HBoxContainer/VBoxContainer/StatPoints"]
-margin_right = 180.0
-margin_bottom = 15.0
-rect_min_size = Vector2( 180, 15 )
+offset_right = 180.0
+offset_bottom = 15.0
+custom_minimum_size = Vector2( 180, 15 )
 color = Color( 1, 0, 0, 1 )
 
 [node name="Name" type="Label" parent="NinePatchRect/HBoxContainer/VBoxContainer/StatPoints/ColorRect"]
-margin_top = -4.0
-margin_bottom = 20.0
-custom_fonts/font = ExtResource( 3 )
+offset_top = -4.0
+offset_bottom = 20.0
+theme_override_fonts/font = ExtResource( 3 )
 text = "Stat Points"
 __meta__ = {
 "_edit_use_anchors_": true
 }
 
 [node name="Value" type="Label" parent="NinePatchRect/HBoxContainer/VBoxContainer/StatPoints/ColorRect"]
-margin_top = -4.0
-margin_right = 176.0
-margin_bottom = 20.0
+offset_top = -4.0
+offset_right = 176.0
+offset_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
-custom_fonts/font = ExtResource( 3 )
+theme_override_fonts/font = ExtResource( 3 )
 text = "5"
 align = 2
 __meta__ = {

@@ -1,27 +1,27 @@
-extends KinematicBody2D
+extends CharacterBody2D
 var id = '100002'
 var location = null
 var map_id = null
 var state = "idle"
 var stats = {}
 var damage_taken: Array = []
-onready var parent
-onready var miss_counter = 0
+@onready var parent
+@onready var miss_counter = 0
 
 var rng = RandomNumberGenerator.new()
-var velocity = Vector2.ZERO
 var direction = Vector2.RIGHT
 var gravity = 1600
 var speed_factor = 0.5
 var move_state
 var attackers: Dictionary = {}
-onready var target_node
-onready var target_position
-onready var knockback_position
-onready var knockback_power = 1000
+@onready var target_node
+@onready var target_position
+@onready var knockback_position
+@onready var knockback_power = 1000
 
 func _ready():
 	stats = ServerData.monsterTable[self.id].duplicate(true)
+	velocity = Vector2.ZERO
 	
 func _process(delta):
 	touch_damage()
@@ -67,6 +67,7 @@ func _process(delta):
 				
 				# if new target != previous target
 				else:
+					@warning_ignore("shadowed_variable")
 					var target_node = get_node(ServerData.player_location[ServerData.ign_id_dict[target]] + "/%s" % ServerData.ign_id_dict[target])
 					target_position = get_distance_from_target(target_node)
 					if target_position.x >= self.position.x:
@@ -86,7 +87,10 @@ func _process(delta):
 				else:
 					velocity.x = 0
 		velocity.y += gravity * delta
-		velocity = move_and_slide(velocity, Vector2.UP)
+		set_velocity(velocity)
+		set_up_direction(Vector2.UP)
+		move_and_slide()
+		velocity = velocity
 	else:
 		# if hit apply knockback
 		#print("knockback")
@@ -96,7 +100,7 @@ func _process(delta):
 			self.state = "idle"
 
 func _on_Timer_timeout():
-	move_state = floor(rand_range(0,3))
+	move_state = floor(randf_range(0,3))
 
 func touch_damage():
 	if $do_damage.get_overlapping_areas().size() > 0:
@@ -114,7 +118,7 @@ func update_state() -> void:
 	damage_taken.clear()
 
 func get_target() -> String:
-	if attackers.empty():
+	if attackers.is_empty():
 		return "none"
 	else:
 		var players = attackers.keys()
@@ -127,6 +131,7 @@ func get_target() -> String:
 			var highest_player
 			var highest_damage
 			for player in players:
+				@warning_ignore("unassigned_variable")
 				if not highest_player:
 					highest_player = player
 					highest_damage = attackers[player]
@@ -137,6 +142,7 @@ func get_target() -> String:
 							highest_damage = attackers[player]
 			return highest_player
 			
+@warning_ignore("shadowed_variable")
 func get_distance_from_target(target_node) -> Vector2:
 	if target_node.position.x > self.position.x:
 		return Vector2(target_node.position.x + 50, self.position.y) 

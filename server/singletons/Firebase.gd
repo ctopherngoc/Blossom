@@ -1,29 +1,27 @@
 extends Node
-onready var PROJECT_ID
-onready var DATABASE_URL: String
-onready var LOGIN_URL: String
-onready var FB_USERNAME: String
-onready var FB_PASSWORD: String
+@onready var PROJECT_ID
+@onready var DATABASE_URL: String
+@onready var LOGIN_URL: String
+@onready var FB_USERNAME: String
+@onready var FB_PASSWORD: String
 var user_info := {}
 var server_token = ""
 
 func _ready():
-	var data_file = File.new()
-	data_file.open("res://data/server.json", File.READ)
-	var server_json = JSON.parse(data_file.get_as_text())
-	PROJECT_ID = server_json.result["PROJECT_ID"]
-	DATABASE_URL = "https://firestore.googleapis.com/v1/projects/%s/databases/(default)/documents/" % server_json.result["PROJECT_ID"]
-	LOGIN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=%s" % server_json.result["API_KEY"]
-	FB_USERNAME = server_json.result["USERNAME"]
-	FB_PASSWORD = server_json.result["PASSWORD"]
+	var data_file = FileAccess.open("res://data/server.json", FileAccess.READ)
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(data_file.get_as_text())
+	var server_json = test_json_conv.get_data()
+	PROJECT_ID = server_json.PROJECT_ID
+	DATABASE_URL = "https://firestore.googleapis.com/v1/projects/%s/databases/(default)/documents/" % server_json.PROJECT_ID
+	LOGIN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=%s" % server_json.API_KEY
+	
+	FB_USERNAME = server_json.USERNAME
+	FB_PASSWORD = server_json.PASSWORD
 	data_file.close()
 	
-	#var test = quest_data_converter([[-1], [-1, [5]],[-1, 0]], [])
-	#var document := {"fields": {"questLog":{'arrayValue':{'values': test}}}}
-	#print(document)
-	
-func _get_request_headers(token_id: String) -> PoolStringArray:
-	return PoolStringArray([
+func _get_request_headers(token_id: String) -> PackedStringArray:
+	return PackedStringArray([
 		"Content-Type: application/json",
 		"Authorization: Bearer %s" % token_id
 	])
@@ -32,18 +30,18 @@ func _get_request_headers(token_id: String) -> PoolStringArray:
 # create baseline in /users and chreating new character in /characters
 func save_document(path: String, fields: Dictionary, token: String)-> void:
 	var document := {"fields": fields}
-	var body := to_json(document)
+	var body := JSON.new().stringify(document)
 	var url := DATABASE_URL + path
 	var temp_HTTP = HTTPRequest.new()
 	self.add_child(temp_HTTP)
 # warning-ignore:return_value_discarded
 	if "users/" in path:
-		temp_HTTP.request(url, _get_request_headers(token),false, HTTPClient.METHOD_POST, body)
-		yield(temp_HTTP, "request_completed")
+		temp_HTTP.request(url, _get_request_headers(token), HTTPClient.METHOD_POST, body)
+		await temp_HTTP.request_completed
 	else:
 # warning-ignore:return_value_discarded
-		temp_HTTP.request(url, _get_request_headers(token),false, HTTPClient.METHOD_POST, body)
-		yield(temp_HTTP, "request_completed")
+		temp_HTTP.request(url, _get_request_headers(token), HTTPClient.METHOD_POST, body)
+		await temp_HTTP.request_completed
 	temp_HTTP.queue_free()
 	
 # saving characters/updating information
@@ -58,44 +56,44 @@ func update_document(path: String, token: String, data) -> void:
 			character_array.append({'stringValue':str(character)})
 		var temp_dict = {'characters':{'arrayValue':{'values': character_array}}}
 		var document := {"fields": temp_dict}
-		var body := to_json(document)
+		var body := JSON.new().stringify(document)
 		var url := DATABASE_URL + path
 		# warning-ignore:return_value_discarded
-		temp_HTTP.request(url, _get_request_headers(token), false, HTTPClient.METHOD_PATCH, body)
-		yield(temp_HTTP, "request_completed")
+		temp_HTTP.request(url, _get_request_headers(token), HTTPClient.METHOD_PATCH, body)
+		await temp_HTTP.request_completed
 		
 	elif 'items/' in path:
 		var fb_data = ServerData.static_data.fb_equipment_template.duplicate(true)
 # warning-ignore:return_value_discarded
 		item_data_converter(data, fb_data)
 		var document := {"fields": fb_data}
-		var body := to_json(document)
+		var body := JSON.new().stringify(document)
 		var url := DATABASE_URL + path
 		# warning-ignore:return_value_discarded
-		temp_HTTP.request(url, _get_request_headers(server_token), false, HTTPClient.METHOD_PATCH, body)
-		yield(temp_HTTP, "request_completed")
+		temp_HTTP.request(url, _get_request_headers(server_token), HTTPClient.METHOD_PATCH, body)
+		await temp_HTTP.request_completed
 		
 	elif 'characters/' in path:
 		# update /character
 		var fb_data = ServerData.static_data.player_info.duplicate(true)
 		server_dictionary_converter(data, fb_data)
 		var document := {"fields": fb_data}
-		var body := to_json(document)
+		var body := JSON.new().stringify(document)
 		var url := DATABASE_URL + path
 		# warning-ignore:return_value_discarded
-		temp_HTTP.request(url, _get_request_headers(token), false, HTTPClient.METHOD_PATCH, body)
-		yield(temp_HTTP, "request_completed")
+		temp_HTTP.request(url, _get_request_headers(token), HTTPClient.METHOD_PATCH, body)
+		await temp_HTTP.request_completed
 		
 	elif 'quests/' in path:
 		var FB_DATA = []
 		quest_data_converter(data, FB_DATA)
 		# document["fields"]["questLog"]['arrayValue']['values']
 		var document := {"fields": {"questLog":{'arrayValue':{'values':FB_DATA}}}}
-		var body := to_json(document)
+		var body := JSON.new().stringify(document)
 		var url := DATABASE_URL + path
 		# warning-ignore:return_value_discarded
-		temp_HTTP.request(url, _get_request_headers(token), false, HTTPClient.METHOD_PATCH, body)
-		yield(temp_HTTP, "request_completed")
+		temp_HTTP.request(url, _get_request_headers(token), HTTPClient.METHOD_PATCH, body)
+		await temp_HTTP.request_completed
 		
 	temp_HTTP.queue_free()
 
@@ -104,8 +102,8 @@ func delete_document(path: String, token: String) -> void:
 	var temp_HTTP = HTTPRequest.new()
 	self.add_child(temp_HTTP)
 	var url := DATABASE_URL + path
-	temp_HTTP.request(url, _get_request_headers(token), false, HTTPClient.METHOD_DELETE)
-	yield(temp_HTTP, "request_completed")
+	temp_HTTP.request(url, _get_request_headers(token), HTTPClient.METHOD_DELETE)
+	await temp_HTTP.request_completed
 	temp_HTTP.queue_free()
 	
 func firebase_dictionary_converter(database_data: Dictionary, client_data: Array) -> void:
@@ -229,11 +227,15 @@ func firebase_dictionary_converter(database_data: Dictionary, client_data: Array
 ###############################################################################
 ###############################################################################
 func _get_user_info(result: Array) -> Dictionary:
-	var result_body := JSON.parse(result[3].get_string_from_ascii()).result as Dictionary
+	#var test_json_conv = JSON.new()
+	#test_json_conv.parse(result[3].get_string_from_ascii()).result as Dictionary
+	#var result_body := test_json_conv.get_data()
+	var text = result[3].get_string_from_ascii()
+	var result_body: Dictionary = JSON.parse_string(text)
 	return {
 		"token" : result_body.idToken,
 		"id" : result_body.localId,
-		"timestamp" : OS.get_unix_time(),
+		"timestamp" : Time.get_unix_time_from_system(),
 	}
 
 func login(email: String, password: String, results: Array) -> void:
@@ -245,8 +247,8 @@ func login(email: String, password: String, results: Array) -> void:
 		'returnSecureToken': true
 	}
 	# warning-ignore:return_value_discarded
-	temp_HTTP.request(LOGIN_URL, [], false, HTTPClient.METHOD_POST, to_json(body))
-	var result := yield(temp_HTTP, "request_completed") as Array
+	temp_HTTP.request(LOGIN_URL, [], HTTPClient.METHOD_POST, JSON.new().stringify(body))
+	var result := await temp_HTTP.request_completed as Array
 
 	if result[1] == 200:
 		"""
@@ -264,22 +266,27 @@ func login(email: String, password: String, results: Array) -> void:
 func get_data(username: String, password: String):
 	print("starting to get data")
 	var results = []
-	var firebaseStatus = login(username, password, results)
-	yield(firebaseStatus, "completed")
+	#var firebaseStatus = login(username, password, results)
+	#await firebaseStatus.completed
+	await login(username, password, results)
 	if results[0] != 200:
 		print("Server Signin Unsuccessful")
-		return get_data(username, password)
+		return await get_data(username, password)
 	else:
 		print("Server Signin Successful")
 		server_token = results[1]['token']
-		var accounts_call = _server_get_document("users/")
-		yield(accounts_call, 'completed')
-		var characters_call = _server_get_document("characters/")
-		yield(characters_call, 'completed')
-		var items_call = _server_get_document("items/")
-		yield(items_call, 'completed')
-		var quests_call = _server_get_document("quests/")
-		yield(quests_call, 'completed')
+		#var accounts_call = _server_get_document("users/")
+		#await accounts_call.completed
+		await _server_get_document("users/")
+		#var characters_call = _server_get_document("characters/")
+		#await characters_call.completed
+		await _server_get_document("characters/")
+		#var items_call = _server_get_document("items/")
+		#await items_call.completed
+		await _server_get_document("items/")
+		#var quests_call = _server_get_document("quests/")
+		#await quests_call.completed
+		await _server_get_document("quests/")
 		print("data loaded")
 		Global.server.start_server()
 		HubConnection.connect_to_server()
@@ -289,9 +296,13 @@ func _server_get_document(path: String) -> void:
 	self.add_child(temp_HTTP)
 	var url := DATABASE_URL + path
 	# warning-ignore:return_value_discarded
-	temp_HTTP.request(url, _get_request_headers(server_token), false, HTTPClient.METHOD_GET)
-	var result := yield(temp_HTTP, "request_completed") as Array
-	var result_body := JSON.parse(result[3].get_string_from_ascii()).result as Dictionary
+	temp_HTTP.request(url, _get_request_headers(server_token), HTTPClient.METHOD_GET)
+	var result := await temp_HTTP.request_completed as Array
+	var test_json_conv = JSON.new()
+	#test_json_conv.parse(result[3].get_string_from_ascii()).result as Dictionary
+	#var result_body := test_json_conv.get_data()
+	var text = result[3].get_string_from_ascii()
+	var result_body: Dictionary = JSON.parse_string(text)
 
 	if "users" in path:
 		if "documents" in result_body.keys():
@@ -329,7 +340,7 @@ func _server_get_document(path: String) -> void:
 				ServerData.quest_data[character] = quest_data_database_converter(document["fields"]["questLog"]['arrayValue']['values'])
 	
 	temp_HTTP.queue_free()
-	return 0
+	return 
 	
 func server_firebase_dictionary_converter(database_data: Dictionary) -> Dictionary:
 	"""
@@ -625,10 +636,9 @@ func server_dictionary_converter(server_data: Dictionary, firebase_data: Diction
 		else:
 			fb_shortcut[key] = {"stringValue": shortcut[key]}
 	
-func save(var path : String, var thing_to_save: Dictionary):
-	var file = File.new()
-	file.open(path, File.WRITE)
-	file.store_line(JSON.print(thing_to_save, "\t"))
+func save(path : String, thing_to_save: Dictionary):
+	var file = FileAccess.open(path, FileAccess.WRITE)
+	file.store_line(JSON.stringify(thing_to_save, "\t"))
 	file.close()
 
 func item_data_converter(before: Dictionary, after: Dictionary) -> Dictionary:

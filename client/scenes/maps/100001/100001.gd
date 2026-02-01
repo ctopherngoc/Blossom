@@ -1,8 +1,8 @@
 extends Node2D
 var map_id = "100001"
 var map_name = "Grassy Road 1"
-onready var monsters = $Monsters
-onready var max_monsters = 2
+@onready var monsters = $Monsters
+@onready var max_monsters = 2
 
 var spawn_location = Vector2(-98, -347)
 
@@ -16,8 +16,8 @@ var map_bound = {
 func _ready():
 	var gameWorld = self.get_parent().get_parent()
 	
-	if str(Global.player.map) != get_filename():
-		Global.update_lastmap(get_filename())
+	if str(Global.player.map) != get_scene_file_path():
+		Global.update_lastmap(get_scene_file_path())
 
 	$Player.camera.limit_left = map_bound["left"]
 	$Player.camera.limit_right = map_bound["right"]

@@ -1,13 +1,13 @@
-extends Sprite
+extends Sprite2D
 
-onready var id
-onready var dialogue
+@onready var id
+@onready var dialogue
 
-onready var label = $Label
-onready var anim = $AnimationPlayer
+@onready var label = $Label
+@onready var anim = $AnimationPlayer
 
 
-onready var can_interact = true
+@onready var can_interact = true
 var clicked = false
 
 func _ready():

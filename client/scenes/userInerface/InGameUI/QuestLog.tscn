@@ -1,14 +1,14 @@
 [gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://scenes/userInerface/InGameUI/QuestLog.gd" type="Script" id=1]
-[ext_resource path="res://resources/Fonts/Oswald/Oswald-VariableFont_wght.ttf" type="DynamicFontData" id=2]
-[ext_resource path="res://assets/UI/background/window_background2.png" type="Texture" id=3]
-[ext_resource path="res://assets/fonts/droid-sans/DroidSans.ttf" type="DynamicFontData" id=5]
-[ext_resource path="res://assets/fonts/droid-sans/DroidSans-Bold.ttf" type="DynamicFontData" id=6]
+[ext_resource path="res://resources/Fonts/Oswald/Oswald-VariableFont_wght.ttf" type="FontFile" id=2]
+[ext_resource path="res://assets/UI/background/window_background2.png" type="Texture2D" id=3]
+[ext_resource path="res://assets/fonts/droid-sans/DroidSans.ttf" type="FontFile" id=5]
+[ext_resource path="res://assets/fonts/droid-sans/DroidSans-Bold.ttf" type="FontFile" id=6]
 
 [sub_resource type="Theme" id=3]
 
-[sub_resource type="DynamicFont" id=1]
+[sub_resource type="FontFile" id=1]
 size = 24
 outline_size = 2
 outline_color = Color( 0, 0, 0, 1 )
@@ -47,31 +47,31 @@ TabContainer/styles/tab_bg = SubResource( 5 )
 TabContainer/styles/tab_disabled = SubResource( 6 )
 TabContainer/styles/tab_fg = SubResource( 7 )
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="FontFile" id=2]
 size = 18
 outline_size = 1
 outline_color = Color( 0, 0, 0, 1 )
 font_data = ExtResource( 2 )
 
-[sub_resource type="DynamicFontData" id=9]
+[sub_resource type="FontFile" id=9]
 font_path = "res://assets/fonts/droid-sans/DroidSans.ttf"
 
-[sub_resource type="DynamicFont" id=10]
+[sub_resource type="FontFile" id=10]
 size = 20
 font_data = SubResource( 9 )
 
-[sub_resource type="DynamicFontData" id=11]
+[sub_resource type="FontFile" id=11]
 font_path = "res://assets/fonts/droid-sans/DroidSans.ttf"
 
-[sub_resource type="DynamicFont" id=12]
+[sub_resource type="FontFile" id=12]
 size = 20
 font_data = SubResource( 11 )
 
-[sub_resource type="DynamicFont" id=13]
+[sub_resource type="FontFile" id=13]
 size = 18
 font_data = ExtResource( 5 )
 
-[sub_resource type="DynamicFont" id=14]
+[sub_resource type="FontFile" id=14]
 size = 18
 font_data = ExtResource( 6 )
 
@@ -80,11 +80,11 @@ anchor_left = -0.0015625
 anchor_top = 0.00416667
 anchor_right = 0.166
 anchor_bottom = 0.294
-margin_left = 2.0
-margin_top = -3.0
-margin_right = 213.52
-margin_bottom = 212.32
-rect_scale = Vector2( 0.5, 0.5 )
+offset_left = 2.0
+offset_top = -3.0
+offset_right = 213.52
+offset_bottom = 212.32
+scale = Vector2( 0.5, 0.5 )
 mouse_filter = 1
 script = ExtResource( 1 )
 __meta__ = {
@@ -108,10 +108,10 @@ __meta__ = {
 [node name="ColorRect" type="ColorRect" parent="QuestLog"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 5.0
-margin_top = 5.0
-margin_right = -5.0
-margin_bottom = -5.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
 mouse_filter = 1
 color = Color( 0, 0, 0, 1 )
 
@@ -119,36 +119,36 @@ color = Color( 0, 0, 0, 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 1
-custom_constants/margin_right = 19
-custom_constants/margin_top = 11
-custom_constants/margin_left = 19
-custom_constants/margin_bottom = 11
+theme_override_constants/margin_right = 19
+theme_override_constants/margin_top = 11
+theme_override_constants/margin_left = 19
+theme_override_constants/margin_bottom = 11
 
 [node name="V" type="VBoxContainer" parent="QuestLog/M"]
-margin_left = 19.0
-margin_top = 11.0
-margin_right = 407.0
-margin_bottom = 413.0
+offset_left = 19.0
+offset_top = 11.0
+offset_right = 407.0
+offset_bottom = 413.0
 
 [node name="Header" type="HBoxContainer" parent="QuestLog/M/V"]
-margin_right = 388.0
-margin_bottom = 30.0
-rect_min_size = Vector2( 240, 25 )
+offset_right = 388.0
+offset_bottom = 30.0
+custom_minimum_size = Vector2( 240, 25 )
 mouse_filter = 0
 size_flags_horizontal = 3
 alignment = 1
 
 [node name="Control" type="Control" parent="QuestLog/M/V/Header"]
-margin_right = 65.0
-margin_bottom = 30.0
+offset_right = 65.0
+offset_bottom = 30.0
 mouse_filter = 1
 size_flags_horizontal = 3
 
 [node name="TitleBackground" type="TextureRect" parent="QuestLog/M/V/Header"]
-margin_left = 69.0
-margin_right = 319.0
-margin_bottom = 30.0
-rect_min_size = Vector2( 250, 30 )
+offset_left = 69.0
+offset_right = 319.0
+offset_bottom = 30.0
+custom_minimum_size = Vector2( 250, 30 )
 expand = true
 
 [node name="Label" type="Label" parent="QuestLog/M/V/Header/TitleBackground"]
@@ -156,44 +156,44 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -125.0
-margin_top = -18.0
-margin_right = 125.0
-margin_bottom = 18.0
-rect_min_size = Vector2( 150, 0 )
+offset_left = -125.0
+offset_top = -18.0
+offset_right = 125.0
+offset_bottom = 18.0
+custom_minimum_size = Vector2( 150, 0 )
 size_flags_horizontal = 3
-custom_fonts/font = SubResource( 1 )
+theme_override_fonts/font = SubResource( 1 )
 text = "Quests"
 align = 1
 valign = 1
 
 [node name="Exit" type="Control" parent="QuestLog/M/V/Header"]
-margin_left = 323.0
-margin_right = 388.0
-margin_bottom = 30.0
+offset_left = 323.0
+offset_right = 388.0
+offset_bottom = 30.0
 mouse_filter = 1
 size_flags_horizontal = 3
 
 [node name="TextureButton" type="TextureButton" parent="QuestLog/M/V/Header/Exit"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 25, 25 )
+custom_minimum_size = Vector2( 25, 25 )
 expand = true
 
 [node name="TabContainer" type="TabContainer" parent="QuestLog/M/V"]
-margin_top = 34.0
-margin_right = 388.0
-margin_bottom = 402.0
+offset_top = 34.0
+offset_right = 388.0
+offset_bottom = 402.0
 mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = SubResource( 8 )
-custom_fonts/font = SubResource( 2 )
+theme_override_fonts/font = SubResource( 2 )
 
-[node name="Avaliable" type="Tabs" parent="QuestLog/M/V/TabContainer"]
+[node name="Avaliable" type="TabBar" parent="QuestLog/M/V/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = 30.0
+offset_top = 30.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 scrolling_enabled = false
@@ -208,29 +208,29 @@ __meta__ = {
 }
 
 [node name="MarginContainer" type="MarginContainer" parent="QuestLog/M/V/TabContainer/Avaliable/ScrollContainer"]
-margin_right = 10.0
-margin_bottom = 10.0
-custom_constants/margin_right = 5
-custom_constants/margin_top = 5
-custom_constants/margin_left = 5
-custom_constants/margin_bottom = 5
+offset_right = 10.0
+offset_bottom = 10.0
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_bottom = 5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="QuestLog/M/V/TabContainer/Avaliable/ScrollContainer/MarginContainer"]
-margin_left = 5.0
-margin_top = 5.0
-margin_right = 5.0
-margin_bottom = 5.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 5.0
+offset_bottom = 5.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="InProgress" type="Tabs" parent="QuestLog/M/V/TabContainer"]
+[node name="InProgress" type="TabBar" parent="QuestLog/M/V/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 32.0
-margin_right = -4.0
-margin_bottom = -4.0
+offset_left = 4.0
+offset_top = 32.0
+offset_right = -4.0
+offset_bottom = -4.0
 mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -239,33 +239,33 @@ scrolling_enabled = false
 [node name="ScrollContainer" type="ScrollContainer" parent="QuestLog/M/V/TabContainer/InProgress"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = 2.0
+offset_right = 2.0
 mouse_filter = 1
 size_flags_vertical = 3
 scroll_horizontal_enabled = false
 
 [node name="MarginContainer" type="MarginContainer" parent="QuestLog/M/V/TabContainer/InProgress/ScrollContainer"]
-margin_right = 10.0
-margin_bottom = 10.0
-custom_constants/margin_right = 5
-custom_constants/margin_top = 5
-custom_constants/margin_left = 5
-custom_constants/margin_bottom = 5
+offset_right = 10.0
+offset_bottom = 10.0
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_bottom = 5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="QuestLog/M/V/TabContainer/InProgress/ScrollContainer/MarginContainer"]
-margin_left = 5.0
-margin_top = 5.0
-margin_right = 5.0
-margin_bottom = 5.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 5.0
+offset_bottom = 5.0
 
-[node name="Completed" type="Tabs" parent="QuestLog/M/V/TabContainer"]
+[node name="Completed" type="TabBar" parent="QuestLog/M/V/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 32.0
-margin_right = -4.0
-margin_bottom = -4.0
+offset_left = 4.0
+offset_top = 32.0
+offset_right = -4.0
+offset_bottom = -4.0
 mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -274,31 +274,31 @@ scrolling_enabled = false
 [node name="ScrollContainer" type="ScrollContainer" parent="QuestLog/M/V/TabContainer/Completed"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = 2.0
+offset_right = 2.0
 mouse_filter = 1
 size_flags_vertical = 3
 scroll_horizontal_enabled = false
 
 [node name="MarginContainer" type="MarginContainer" parent="QuestLog/M/V/TabContainer/Completed/ScrollContainer"]
-margin_right = 10.0
-margin_bottom = 10.0
-custom_constants/margin_right = 5
-custom_constants/margin_top = 5
-custom_constants/margin_left = 5
-custom_constants/margin_bottom = 5
+offset_right = 10.0
+offset_bottom = 10.0
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_bottom = 5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="QuestLog/M/V/TabContainer/Completed/ScrollContainer/MarginContainer"]
-margin_left = 5.0
-margin_top = 5.0
-margin_right = 5.0
-margin_bottom = 5.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 5.0
+offset_bottom = 5.0
 
 [node name="QuestInfo" type="NinePatchRect" parent="."]
 visible = false
 anchor_left = 1.00469
 anchor_right = 2.00469
 anchor_bottom = 1.0
-margin_right = -8.00006
+offset_right = -8.00006
 theme = SubResource( 3 )
 texture = ExtResource( 3 )
 region_rect = Rect2( 0, 0, 48, 48 )
@@ -313,37 +313,37 @@ __meta__ = {
 [node name="ColorRect" type="ColorRect" parent="QuestInfo"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 5.0
-margin_top = 5.0
-margin_right = -5.0
-margin_bottom = -5.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
 color = Color( 0, 0, 0, 1 )
 
 [node name="M" type="MarginContainer" parent="QuestInfo"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_constants/margin_right = 19
-custom_constants/margin_top = 11
-custom_constants/margin_left = 19
-custom_constants/margin_bottom = 11
+theme_override_constants/margin_right = 19
+theme_override_constants/margin_top = 11
+theme_override_constants/margin_left = 19
+theme_override_constants/margin_bottom = 11
 
 [node name="V" type="VBoxContainer" parent="QuestInfo/M"]
-margin_left = 19.0
-margin_top = 11.0
-margin_right = 398.0
-margin_bottom = 413.0
+offset_left = 19.0
+offset_top = 11.0
+offset_right = 398.0
+offset_bottom = 413.0
 
 [node name="Header" type="HBoxContainer" parent="QuestInfo/M/V"]
-margin_right = 379.0
-margin_bottom = 120.0
-rect_min_size = Vector2( 240, 25 )
+offset_right = 379.0
+offset_bottom = 120.0
+custom_minimum_size = Vector2( 240, 25 )
 size_flags_horizontal = 3
 alignment = 1
 
 [node name="ColorRect" type="ColorRect" parent="QuestInfo/M/V/Header"]
-margin_right = 379.0
-margin_bottom = 120.0
-rect_min_size = Vector2( 0, 120 )
+offset_right = 379.0
+offset_bottom = 120.0
+custom_minimum_size = Vector2( 0, 120 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color( 0.705882, 0.705882, 0.705882, 1 )
@@ -351,60 +351,60 @@ color = Color( 0.705882, 0.705882, 0.705882, 1 )
 [node name="Exit" type="Control" parent="QuestInfo/M/V/Header/ColorRect"]
 anchor_left = 1.0
 anchor_right = 1.0
-margin_left = -25.0
-margin_bottom = 25.0
+offset_left = -25.0
+offset_bottom = 25.0
 
 [node name="TextureButton" type="TextureButton" parent="QuestInfo/M/V/Header/ColorRect/Exit"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 25, 25 )
+custom_minimum_size = Vector2( 25, 25 )
 expand = true
 
-[node name="Sprite" type="Sprite" parent="QuestInfo/M/V/Header/ColorRect"]
+[node name="Sprite2D" type="Sprite2D" parent="QuestInfo/M/V/Header/ColorRect"]
 position = Vector2( 317.002, 57 )
 scale = Vector2( 0.9, 0.934375 )
 flip_h = true
 hframes = 16
 
 [node name="VBoxContainer" type="VBoxContainer" parent="QuestInfo/M/V/Header/ColorRect"]
-margin_left = 5.0
-margin_top = 5.0
-margin_right = 246.0
-margin_bottom = 114.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 246.0
+offset_bottom = 114.0
 
 [node name="QuestName" type="Label" parent="QuestInfo/M/V/Header/ColorRect/VBoxContainer"]
-margin_right = 241.0
-margin_bottom = 25.0
-rect_min_size = Vector2( 0, 25 )
+offset_right = 241.0
+offset_bottom = 25.0
+custom_minimum_size = Vector2( 0, 25 )
 size_flags_vertical = 5
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_fonts/font = SubResource( 10 )
+theme_override_colors/font_color = Color( 0, 0, 0, 1 )
+theme_override_fonts/font = SubResource( 10 )
 text = "Quest name"
 valign = 1
 clip_text = true
 
 [node name="LevelReq" type="Label" parent="QuestInfo/M/V/Header/ColorRect/VBoxContainer"]
-margin_top = 29.0
-margin_right = 241.0
-margin_bottom = 53.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_fonts/font = SubResource( 12 )
+offset_top = 29.0
+offset_right = 241.0
+offset_bottom = 53.0
+theme_override_colors/font_color = Color( 0, 0, 0, 1 )
+theme_override_fonts/font = SubResource( 12 )
 text = "level: 200"
 valign = 1
 
 [node name="ColorRect" type="ColorRect" parent="QuestInfo/M/V/Header/ColorRect"]
-margin_left = 253.0
-margin_top = 3.0
-margin_right = 255.0
-margin_bottom = 118.0
+offset_left = 253.0
+offset_top = 3.0
+offset_right = 255.0
+offset_bottom = 118.0
 size_flags_vertical = 3
 color = Color( 0, 0, 0, 1 )
 
 [node name="ColorRect" type="ColorRect" parent="QuestInfo/M/V"]
-margin_top = 124.0
-margin_right = 379.0
-margin_bottom = 402.0
-rect_min_size = Vector2( 0, 20 )
+offset_top = 124.0
+offset_right = 379.0
+offset_bottom = 402.0
+custom_minimum_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color( 0.290196, 0.27451, 0.345098, 1 )
@@ -412,71 +412,71 @@ color = Color( 0.290196, 0.27451, 0.345098, 1 )
 [node name="MarginContainer" type="MarginContainer" parent="QuestInfo/M/V/ColorRect"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_constants/margin_right = 8
-custom_constants/margin_top = 8
-custom_constants/margin_left = 8
-custom_constants/margin_bottom = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_bottom = 8
 
 [node name="VBoxContainer" type="VBoxContainer" parent="QuestInfo/M/V/ColorRect/MarginContainer"]
-margin_left = 8.0
-margin_top = 8.0
-margin_right = 371.0
-margin_bottom = 270.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 371.0
+offset_bottom = 270.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Description" type="Label" parent="QuestInfo/M/V/ColorRect/MarginContainer/VBoxContainer"]
-margin_right = 363.0
-margin_bottom = 25.0
-rect_min_size = Vector2( 0, 25 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_fonts/font = SubResource( 13 )
+offset_right = 363.0
+offset_bottom = 25.0
+custom_minimum_size = Vector2( 0, 25 )
+theme_override_colors/font_color = Color( 0, 0, 0, 1 )
+theme_override_fonts/font = SubResource( 13 )
 text = "BLAH BLAH BLAH BLAH"
 valign = 1
 autowrap = true
 
 [node name="Space2" type="Control" parent="QuestInfo/M/V/ColorRect/MarginContainer/VBoxContainer"]
-margin_top = 29.0
-margin_right = 363.0
-margin_bottom = 49.0
-rect_min_size = Vector2( 0, 20 )
+offset_top = 29.0
+offset_right = 363.0
+offset_bottom = 49.0
+custom_minimum_size = Vector2( 0, 20 )
 
 [node name="Objective" type="Label" parent="QuestInfo/M/V/ColorRect/MarginContainer/VBoxContainer"]
-margin_top = 53.0
-margin_right = 363.0
-margin_bottom = 75.0
-custom_colors/font_color = Color( 1, 0.92549, 0, 1 )
-custom_fonts/font = SubResource( 14 )
+offset_top = 53.0
+offset_right = 363.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color( 1, 0.92549, 0, 1 )
+theme_override_fonts/font = SubResource( 14 )
 text = "Kill 5 Monsters"
 valign = 1
 autowrap = true
 
 [node name="Space3" type="Control" parent="QuestInfo/M/V/ColorRect/MarginContainer/VBoxContainer"]
-margin_top = 79.0
-margin_right = 363.0
-margin_bottom = 238.0
-rect_min_size = Vector2( 0, 20 )
+offset_top = 79.0
+offset_right = 363.0
+offset_bottom = 238.0
+custom_minimum_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="QuestInfo/M/V/ColorRect/MarginContainer/VBoxContainer"]
-margin_top = 242.0
-margin_right = 363.0
-margin_bottom = 262.0
+offset_top = 242.0
+offset_right = 363.0
+offset_bottom = 262.0
 
 [node name="Control" type="Control" parent="QuestInfo/M/V/ColorRect/MarginContainer/VBoxContainer/HBoxContainer"]
-margin_right = 313.0
-margin_bottom = 20.0
+offset_right = 313.0
+offset_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="ToggleInfo" type="Button" parent="QuestInfo/M/V/ColorRect/MarginContainer/VBoxContainer/HBoxContainer"]
-margin_left = 317.0
-margin_right = 363.0
-margin_bottom = 20.0
+offset_left = 317.0
+offset_right = 363.0
+offset_bottom = 20.0
 text = "close"
 align = 2
-icon_align = 2
+icon_alignment = 2
 
 [connection signal="gui_input" from="QuestLog/M/V/Header" to="." method="_on_Header_gui_input"]
 [connection signal="tab_selected" from="QuestLog/M/V/TabContainer" to="." method="_on_TabContainer_tab_selected"]

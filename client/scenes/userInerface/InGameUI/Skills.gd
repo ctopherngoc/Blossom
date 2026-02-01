@@ -3,24 +3,24 @@ extends Control
 var skill_tabs = preload("res://scenes/userInerface/InGameUI/SkillTab.tscn")
 var skill_container_instance = preload("res://scenes/userInerface/InGameUI/SkillContainer.tscn")
 
-signal move_to_top
+signal move_before
 
-onready var tab_container = $Background/M/V/TabContainer
-onready var skill_container = $Background/M/V/TabContainer
-onready var ap_label = $Background/M/V/ColorRect/HBoxContainer/apLabel
+@onready var tab_container = $Background/M/V/TabContainer
+@onready var skill_container = $Background/M/V/TabContainer
+@onready var ap_label = $Background/M/V/ColorRect/HBoxContainer/apLabel
 
-onready var skill_tab_ref
-onready var skill_tab_data: Array = []
-onready var initialize = 0
+@onready var skill_tab_ref
+@onready var skill_tab_data: Array = []
+@onready var initialize = 0
 var drag_position = null
-onready var type = "skill"
+@onready var type = "skill"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 # warning-ignore:return_value_discarded
-	Signals.connect("update_skills", self, "update_skills")
+	Signals.connect("update_skills", Callable(self, "update_skills"))
 # warning-ignore:return_value_discarded
-	Signals.connect("toggle_skills", self, "toggle_skills")
+	Signals.connect("toggle_skills", Callable(self, "toggle_skills"))
 	
 	poplulate_skills()
 	
@@ -44,7 +44,7 @@ func poplulate_skills():
 			skill_tab_data.append(str(count))
 			
 			# create tab instance
-			var skill_tab_new = skill_tabs.instance()
+			var skill_tab_new = skill_tabs.instantiate()
 			
 			# change tab name
 			skill_tab_new.name = str(tab_count)
@@ -92,7 +92,7 @@ func update_skills():
 		if not job in skill_tab_data:
 			skill_tab_data.append(job)
 			
-			var skill_tab_new = skill_tabs.instance()
+			var skill_tab_new = skill_tabs.instantiate()
 			
 			# change tab name
 			skill_tab_new.name = str(skill_tab_data.size() - 1)
@@ -141,12 +141,12 @@ func _on_Header_gui_input(event):
 	if event is InputEventMouseButton:
 		# left mouse button
 		if event.pressed && event.get_button_index() == 1:
-			drag_position = get_global_mouse_position() - rect_global_position
-			emit_signal('move_to_top', self)
+			drag_position = get_global_mouse_position() - global_position
+			emit_signal('move_before', self)
 		else:
 			drag_position = null
 	if event is InputEventMouseMotion and drag_position:
-		rect_global_position = get_global_mouse_position() - drag_position
+		global_position = get_global_mouse_position() - drag_position
 
 func toggle_skills():
 	self.visible = not self.visible

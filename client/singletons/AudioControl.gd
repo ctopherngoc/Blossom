@@ -1,10 +1,10 @@
 extends Node
 
 
-onready var bgm = $bgm/bgm
-onready var menu = $menu
+@onready var bgm = $bgm/bgm
+@onready var menu = $menu
 
-onready var stream_dict = {
+@onready var stream_dict = {
 	"menuClick": $menu/click,
 	"menuHover": $menu/hover,
 	"itemSwap": $menu/item_swap,

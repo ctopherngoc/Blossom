@@ -8,12 +8,12 @@ var clicked = false
 var sprite = "res://scenes/npcObjects/000001/sprite/stand1_0.png"
 
 func _physics_process(_delta):
-	$AnimatedSprite.play()
+	$AnimatedSprite2D.play()
 # Called when the node enters the scene tree for the first time.
 func _ready():
 # warning-ignore:return_value_discarded
 	$Label.text = title
-	Signals.connect("dialog_closed", self, "dialog_closed")
+	Signals.connect("dialog_closed", Callable(self, "dialog_closed"))
 
 func dialog_closed():
 	clicked = false
@@ -35,7 +35,7 @@ func _on_Area2D_input_event(_viewport, event, _shape_idx):
 		if event is InputEventMouseButton and clicked == false:
 			clicked = true
 			print("popup dialog for npc")
-			var dialog = DIALOG.instance()
+			var dialog = DIALOG.instantiate()
 			Global.ui.add_child(dialog)
 			Global.movable = false
 			

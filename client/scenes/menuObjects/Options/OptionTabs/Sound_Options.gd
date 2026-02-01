@@ -1,12 +1,12 @@
 extends HBoxContainer
 
-onready var SoundSlider = $Sliders/SoundSlider
-onready var EffectSlider = $Sliders/EffectsSlider
-onready var MasterSlider = $Sliders/MasterSlider
-onready var masterValue: float
-onready var musicValue: float
-onready var effectValue: float
-onready var load_settings = false
+@onready var SoundSlider = $Sliders/SoundSlider
+@onready var EffectSlider = $Sliders/EffectsSlider
+@onready var MasterSlider = $Sliders/MasterSlider
+@onready var masterValue: float
+@onready var musicValue: float
+@onready var effectValue: float
+@onready var load_settings = false
 func _ready() -> void:
 	pass
 
@@ -16,7 +16,7 @@ func _on_SoundSlider_value_changed(value: float) -> void:
 		AudioControl.play_audio("menuClick")
 	var sfx_index= AudioServer.get_bus_index("Music")
 	musicValue = value
-	AudioServer.set_bus_volume_db(sfx_index, linear2db(value))
+	AudioServer.set_bus_volume_db(sfx_index, linear_to_db(value))
 
 # warning-ignore:unused_argument
 func _on_EffectsSlider_value_changed(value: float) -> void:
@@ -24,7 +24,7 @@ func _on_EffectsSlider_value_changed(value: float) -> void:
 		AudioControl.play_audio("menuClick")
 	var sfx_index= AudioServer.get_bus_index("Effects")
 	effectValue = value
-	AudioServer.set_bus_volume_db(sfx_index, linear2db(value))
+	AudioServer.set_bus_volume_db(sfx_index, linear_to_db(value))
 
 # warning-ignore:unused_argument
 func _on_MasterSlider_value_changed(value: float) -> void:
@@ -32,7 +32,7 @@ func _on_MasterSlider_value_changed(value: float) -> void:
 		AudioControl.play_audio("menuClick")
 	var sfx_index= AudioServer.get_bus_index("Master")
 	masterValue = value
-	AudioServer.set_bus_volume_db(sfx_index, linear2db(value))
+	AudioServer.set_bus_volume_db(sfx_index, linear_to_db(value))
 
 func save_sound_values() -> void:
 	effectValue = EffectSlider.value
@@ -42,13 +42,13 @@ func save_sound_values() -> void:
 func set_sound_values() -> void:
 	var sfx_index= AudioServer.get_bus_index("Music")
 	SoundSlider.value = musicValue
-	AudioServer.set_bus_volume_db(sfx_index, linear2db(musicValue))
+	AudioServer.set_bus_volume_db(sfx_index, linear_to_db(musicValue))
 	sfx_index = AudioServer.get_bus_index("Master")
 	MasterSlider.value = masterValue
-	AudioServer.set_bus_volume_db(sfx_index, linear2db(masterValue))
+	AudioServer.set_bus_volume_db(sfx_index, linear_to_db(masterValue))
 	sfx_index = AudioServer.get_bus_index("Effects")
 	EffectSlider.value = effectValue
-	AudioServer.set_bus_volume_db(sfx_index, linear2db(effectValue))
+	AudioServer.set_bus_volume_db(sfx_index, linear_to_db(effectValue))
 	load_settings = true
 
 

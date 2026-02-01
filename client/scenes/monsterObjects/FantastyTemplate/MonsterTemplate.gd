@@ -1,4 +1,4 @@
-extends KinematicBody2D
+extends CharacterBody2D
 
 ##########################################################
 var monster_id = "100009"
@@ -7,9 +7,9 @@ var floating_text = preload("res://scenes/userInerface/FloatingText.tscn")
 var current_hp = null
 var miss_counter = null
 var despawn = 1
-onready var timer = $Timer
-onready var sprite = $Sprite
-onready var label = $Label
+@onready var timer = $Timer
+@onready var sprite = $Sprite2D
+@onready var label = $Label
 ############################################################
 var sprite_scale = Vector2(0.7,0.4)
 
@@ -23,12 +23,12 @@ func move(new_position):
 		var curr_position = self.get_position()
 		#turn right
 		if new_position.x > curr_position.x:
-			$Sprite.scale.x = sprite_scale.x * -1
+			$Sprite2D.scale.x = sprite_scale.x * -1
 			#sprite.flip_h = true
 			animation_control('walk')
 		#turn left
 		elif new_position.x < curr_position.x:
-			$Sprite.scale.x = sprite_scale.x
+			$Sprite2D.scale.x = sprite_scale.x
 			#sprite.flip_h = false
 			animation_control('walk')
 		else:
@@ -80,14 +80,14 @@ func damage_taken(health, damage_array: Array) -> void:
 	current_hp = health
 	var lines = 0
 	for damage in damage_array:
-		var damage_text = floating_text.instance()
+		var damage_text = floating_text.instantiate()
 		damage_text.position.y -= 35 * lines
 		damage_text.type = damage[1]
 		damage_text.amount = damage[0]
 		add_child(damage_text)
 		lines += 1
 		health_bar_update()
-		yield(get_tree().create_timer(0.1),"timeout")
+		await get_tree().create_timer(0.1).timeout
 		
 
 # health bar above monsters head on hit/death, not implemented yet
@@ -103,7 +103,7 @@ func on_death():
 	sprite.modulate = Color8(62,62,62)
 	timer.start()
 	print("%s died" % self.name)
-	yield(timer, "timeout")
+	await timer.timeout
 
 func animation_control(animation):
 	if animation == 'idle':

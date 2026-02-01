@@ -8,10 +8,10 @@ var valid: bool = false
 
 var itemStat = preload("res://scenes/userInerface/ItemInfo/ItemStatsLine.tscn")
 
-onready var itemName = $Background/MarginContainer/VBoxContainer/Label
-onready var description = $Background/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Label
-onready var itemIcon = $Background/MarginContainer/VBoxContainer/HBoxContainer/TextureRect
-onready var item_path = "res://assets/itemSprites/"
+@onready var itemName = $Background/MarginContainer/VBoxContainer/Label
+@onready var description = $Background/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Label
+@onready var itemIcon = $Background/MarginContainer/VBoxContainer/HBoxContainer/TextureRect
+@onready var item_path = "res://assets/itemSprites/"
 
 func _ready() -> void:
 	if origin == "Inventory":

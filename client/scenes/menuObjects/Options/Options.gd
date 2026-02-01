@@ -1,10 +1,10 @@
 extends Control
 
-onready var sound_node = $PanelContainer/TabContainer/Sound
-onready var video_node = $PanelContainer/TabContainer/Video
-onready var option_path = "user://gameOption.dat"
-onready var login = self.get_parent()
-onready var tabContainer = $PanelContainer/TabContainer
+@onready var sound_node = $PanelContainer/TabContainer/Sound
+@onready var video_node = $PanelContainer/TabContainer/Video
+@onready var option_path = "user://gameOption.dat"
+@onready var login = self.get_parent()
+@onready var tabContainer = $PanelContainer/TabContainer
 
 func _ready() -> void:
 	load_settings()
@@ -25,7 +25,9 @@ func load_settings() -> void:
 		sound_node.load_settings = true
 		return
 	save_file.open(option_path, File.READ)
-	var settings_data = JSON.parse(save_file.get_as_text())
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(save_file.get_as_text())
+	var settings_data = test_json_conv.get_data()
 	
 	if "video" in settings_data.result.keys():
 		var video_settings =settings_data.result["video"]
@@ -56,7 +58,7 @@ func save_settings() -> void:
 		"fps": Engine.target_fps
 		}
 	}
-	file.store_line(JSON.print(data, "\t"))
+	file.store_line(JSON.stringify(data, "\t"))
 	#file.store_var(data)
 	file.close()
 """

@@ -22,7 +22,7 @@ var timer = Timer.new()
 
 func _ready() -> void:
 	timer.wait_time = 0.5
-	timer.connect("timeout", self, "determine_latency")
+	timer.connect("timeout", Callable(self, "determine_latency"))
 	self.add_child(timer)
 
 func _physics_process(delta: float) -> void:
@@ -36,15 +36,15 @@ func _physics_process(delta: float) -> void:
 ######################################################################
 # Server connection/latency functions
 func connect_to_server() -> void:
-	network = NetworkedMultiplayerENet.new()
+	network = ENetMultiplayerPeer.new()
 	network.create_client(Global.ip, port)
-	get_tree().set_network_peer(network)
+	get_tree().set_multiplayer_peer(network)
 
-	network.connect("connection_failed", self, "_on_connection_failed")
-	network.connect("connection_succeeded", self, "_on_connection_succeeded")
-	network.connect("server_disconnected", self, "_on_server_disconnect")
+	network.connect("connection_failed", Callable(self, "_on_connection_failed"))
+	network.connect("connection_succeeded", Callable(self, "_on_connection_succeeded"))
+	network.connect("server_disconnected", Callable(self, "_on_server_disconnect"))
 # warning-ignore:return_value_discarded
-	Signals.connect("drop_quantity", self, "drop_request")
+	Signals.connect("drop_quantity", Callable(self, "drop_request"))
 
 func _on_connection_failed() -> void:
 	print("Failed to connected")
@@ -63,9 +63,9 @@ func _on_server_disconnect() -> void:
 	print("server disconnected")
 	
 	if login_status == 1:
-		SceneHandler.change_scene("login")
+		SceneHandler.change_scene_to_file("login")
 		login_status = 0
-	get_tree().set_network_peer(null)
+	get_tree().set_multiplayer_peer(null)
 
 ######################################################################
 # client ping calculations 
@@ -77,12 +77,12 @@ func determine_latency() -> void:
 	rpc_id(1, "determine_latency", OS.get_system_time_msecs())
 
 # sync client clock with server clock
-remote func return_server_time(server_time: int, client_time:int) -> void:
+@rpc("any_peer") func return_server_time(server_time: int, client_time:int) -> void:
 # warning-ignore:integer_division
 	latency = (OS.get_system_time_msecs() - client_time) / 2
 	client_clock = server_time + latency
 
-remote func return_latency(client_time: int) -> void:
+@rpc("any_peer") func return_latency(client_time: int) -> void:
 # warning-ignore:integer_division
 	latency_array.append((OS.get_system_time_msecs() - client_time) / 2)
 	if latency_array.size() == 9:
@@ -106,7 +106,7 @@ func check_usernames(requester, username: String) -> void:
 	print("check_username", typeof(requester), typeof((username)))
 	rpc_id(1, "fetch_usernames", requester, username)
 
-remote func return_fetch_usernames(requester, results) -> void:
+@rpc("any_peer") func return_fetch_usernames(requester, results) -> void:
 	print("return_fetch_usernames: %s %s" % [typeof(requester), typeof(results)])
 	print("server username check: %s" % str(results))
 	instance_from_id(requester).username_check_results(results)
@@ -115,7 +115,7 @@ func create_character(requester, char_dict):
 	print("attempting to create character: %s" % char_dict["un"])
 	rpc_id(1, "create_character", requester, char_dict)
 
-remote func return_create_characters(requester, character_array: Array) -> void:
+@rpc("any_peer") func return_create_characters(requester, character_array: Array) -> void:
 	print("return_create_characters: %s %s" % [typeof(requester), typeof(character_array)])
 	print('return_create_characters')
 	Global.character_list = character_array
@@ -126,7 +126,7 @@ func delete_character(requester, username: String) -> void:
 	print("attempting to delete character: %s" % username)
 	rpc_id(1, "delete_character", requester, username)
 
-remote func return_delete_character(player_array, requester) -> void:
+@rpc("any_peer") func return_delete_character(player_array, requester) -> void:
 	print("return_delete_character: %s %s" % [typeof(player_array), typeof(requester)])
 	Global.character_list = player_array
 	instance_from_id(requester).populate_info()
@@ -137,40 +137,40 @@ func choose_character(requester: int, player_name: String):
 	rpc_id(1, "choose_character", requester, player_name)
 
 # warning-ignore:unused_argument
-remote func return_choose_character(requester: int) -> void:
-	SceneHandler.change_scene(Global.player['map']) 
+@rpc("any_peer") func return_choose_character(requester: int) -> void:
+	SceneHandler.change_scene_to_file(Global.player['map']) 
 	#instance_from_id(requester).load_world()
 
 ##############################################################################
 # Authentication
-remote func fetch_token() -> void:
+@rpc("any_peer") func fetch_token() -> void:
 	rpc_id(1, "return_token", token, email)
 
-remote func return_token_verification_results(result: bool, array: Array) -> void:
+@rpc("any_peer") func return_token_verification_results(result: bool, array: Array) -> void:
 	print("server.gd: return_token_verification_results")
 	if result == true:
 		print("token verified")
 		Global.character_list = array
 #		fetch_player_stats()
 		login_status = 1
-		SceneHandler.change_scene("characterSelect")
+		SceneHandler.change_scene_to_file("characterSelect")
 	else:
 		print("token unverified")
 		var login_scene = get_tree().get_current_scene()
 		login_scene.login_button.disabled = false
 		login_scene.notification.text = "login failed, please try again"
 
-remote func already_logged_in() -> void:
+@rpc("any_peer") func already_logged_in() -> void:
 	print("server.gd: already_logged_in")
 	var login_scene = get_tree().get_current_scene()
 	login_scene.notification.text = "Account already logged in"
 	timer.stop()
-	get_tree().set_network_peer(null)
+	get_tree().set_multiplayer_peer(null)
 	Signals.emit_signal("fail_login")
 
 #################################################################################
 # Player functions
-remote func despawn_player(player_id: int) -> void:
+@rpc("any_peer") func despawn_player(player_id: int) -> void:
 	print("server.gd: despawn player")
 	var other_players = get_node("/root/GameWorld/MapNode/%s/OtherPlayers"% Global.current_map) 
 	for player in other_players.get_children():
@@ -184,14 +184,14 @@ func send_player_state(player_state: Dictionary) -> void:
 		if Global.in_game:
 			rpc_unreliable_id(1, "received_player_state", player_state)
 
-remote func receive_world_state(world_state: PoolByteArray) -> void:
+@rpc("any_peer") func receive_world_state(world_state: PackedByteArray) -> void:
 	if Global.current_map == "":
 		pass
 	else:
-		var world_state_dict = bytes2var(world_state)
+		var world_state_dict = bytes_to_var(world_state)
 		Global.update_world_state(world_state_dict)
 
-remote func receive_despawn_player(player_id) -> void:
+@rpc("any_peer") func receive_despawn_player(player_id) -> void:
 	print("receive_despawn_player: %s" % typeof(player_id))
 	Global.despawn_player(player_id)
 	
@@ -201,10 +201,10 @@ func send_input(skill_id: int) -> void:
 
 ########################################################################################################
 #not used
-remote func receive_attack(player_id, attack_time):
+@rpc("any_peer") func receive_attack(player_id, attack_time):
 	print("server.gd: recieve_attack")
 	print(typeof(player_id), " ", typeof(attack_time))
-	if player_id == get_tree().get_network_unique_id():
+	if player_id == get_tree().get_unique_id():
 		print("self attack: pass")
 	elif get_node("/root/GameWorld/MapNode/%s/OtherPlayers" % Global.current_map).has_node(str(player_id)):
 		print(str(player_id) + " attack")
@@ -214,7 +214,7 @@ remote func receive_attack(player_id, attack_time):
 		pass
 ########################################################################################################	
 
-remote func update_player_stats(player_stats: Dictionary) -> void:
+@rpc("any_peer") func update_player_stats(player_stats: Dictionary) -> void:
 	#print("weird update all the time")
 	for character in Global.character_list:
 		if character["displayname"] == player_stats["displayname"]:
@@ -301,19 +301,19 @@ func portal(portal: String) -> void:
 	#print("RPC to server for portal")
 
 # warning-ignore:unused_argument
-remote func return_portal(player_id: int) -> void:
+@rpc("any_peer") func return_portal(player_id: int) -> void:
 	pass
 	print("got return from server portal")
 #
-remote func change_map(map: String, position: Vector2) -> void:
+@rpc("any_peer") func change_map(map: String, position: Vector2) -> void:
 	Global.last_portal = position
-	SceneHandler.change_scene(str(map)) 
+	SceneHandler.change_scene_to_file(str(map)) 
 
 # takes dictionary { 'T': client tick world state, 'P': server.position}
-remote func return_player_input(server_input_results):
+@rpc("any_peer") func return_player_input(server_input_results):
 	Global.server_reconciliation(server_input_results)
 
-remote func receive_climb_data(climb_data: int) -> void:
+@rpc("any_peer") func receive_climb_data(climb_data: int) -> void:
 	if Global.in_game:
 		var player = get_node("/root/GameWorld/MapNode/%s/Player" % Global.current_map)
 		if climb_data == 2:
@@ -333,7 +333,7 @@ func logout() -> void:
 		network.close_connection()
 		rpc_id(1, "logout")
 	Signals.emit_signal("log_out")
-	SceneHandler.change_scene("login")
+	SceneHandler.change_scene_to_file("login")
 	
 func send_inventory_movement(tab: int, from: int, to: int) -> void:
 	"""
@@ -358,10 +358,10 @@ func remove_equipment_request(equipment_slot, inventory_slot) -> void:
 #remote func return_remove_equipment_() -> void:
 #	pass
 	
-remote func server_message(message: String):
+@rpc("any_peer") func server_message(message: String):
 	print("received messge %s" % message)
 	
-remote func loot_data(_item_data: Dictionary) -> void:
+@rpc("any_peer") func loot_data(_item_data: Dictionary) -> void:
 	AudioControl.play_audio("loot")
 	# update notification
 	# var string
@@ -371,7 +371,7 @@ remote func loot_data(_item_data: Dictionary) -> void:
 		# var string = "Picked up %s" % GameData[item_data.id]"
 	#update_message(string)
 
-remote func update_messages(player_id: String, display_name: String, message: String ,group: int) -> void:
+@rpc("any_peer") func update_messages(player_id: String, display_name: String, message: String ,group: int) -> void:
 	print("%s said %s in %s" % [display_name, message, group])
 	Global.ui.ui_nodes.chat_box.update_message(display_name, message, group)
 	if group == 0:
@@ -417,14 +417,14 @@ func accept_quest(quest_id) -> void:
 	print("server accepting quest %s" % str(quest_id))
 	rpc_id(1, "accept_quest", quest_id)
 	
-remote func send_quest_data(quest_data) -> void:
+@rpc("any_peer") func send_quest_data(quest_data) -> void:
 	Global.quest_data = quest_data
 	Signals.emit_signal("update_quest_log")
 	
 func turn_in_quest(quest_id) -> void:
 	rpc_id(1, "turn_in_quest", quest_id)
 
-remote func return_quest(code) -> void:
+@rpc("any_peer") func return_quest(code) -> void:
 	if code == 1:
 		Signals.emit_signal("quest_error_inventory")
 	elif code == -1:

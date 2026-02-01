@@ -1,12 +1,12 @@
-extends KinematicBody2D
+extends CharacterBody2D
 
-onready var http = $HTTP/HTTPRequest
-onready var http2 = $HTTP/HTTPRequest2
-onready var timer =$Timers/Timer
-onready var idle_timer =$Timers/idle_timer
-onready var damage_timer = $Timers/DamageTimer
-onready var animation = $AnimationPlayer
-onready var loot_node = $loot_box
+@onready var http = $HTTP/HTTPRequest
+@onready var http2 = $HTTP/HTTPRequest2
+@onready var timer =$Timers/Timer
+@onready var idle_timer =$Timers/idle_timer
+@onready var damage_timer = $Timers/DamageTimer
+@onready var animation = $AnimationPlayer
+@onready var loot_node = $loot_box
 #contains token and id
 var db_info = {}
 var hittable = true
@@ -113,7 +113,7 @@ func attack(move_id):
 		var equipment = current_character.equipment
 		if equipment.rweapon.type == "1h_sword":
 			animation.play("1h_sword",-1, ServerData.static_data.weapon_speed[equipment.rweapon.speed])
-			yield(animation, "animation_finished")
+			await animation.animation_finished
 		elif equipment.rweapon.type == "2h_sword":
 			pass
 		elif equipment.weapon.type == "bow":

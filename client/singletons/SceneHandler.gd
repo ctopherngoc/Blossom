@@ -1,11 +1,11 @@
 extends CanvasLayer
 
-onready var transition = false
-onready var current_bgm = "menu"
-onready var option_path = "user://gameOption.dat"
+@onready var transition = false
+@onready var current_bgm = "menu"
+@onready var option_path = "user://gameOption.dat"
 
 # menu hash map
-onready var menu_scenes = {
+@onready var menu_scenes = {
 	"logoScreen": null,
 	"mainMenu" : "res://scenes/menuObjects/mainMenu.tscn",
 	"register" : "res://scenes/menuObjects/RegisterScreen/RegisterScreen.tscn",
@@ -14,7 +14,7 @@ onready var menu_scenes = {
 	"create": "res://scenes/menuObjects/CharacterCreate/Create.tscn",
 }
 
-onready var Resolutions: Dictionary = {"3840x2160":Vector2(3840,2160),
+@onready var Resolutions: Dictionary = {"3840x2160":Vector2(3840,2160),
 								"2560x1440":Vector2(2560,1440),
 								"2560x1080":Vector2(2560,1080),
 								"1920x1080":Vector2(1920,1080),
@@ -26,11 +26,11 @@ onready var Resolutions: Dictionary = {"3840x2160":Vector2(3840,2160),
 								"1024x576":Vector2(1024,576),
 								"800x600": Vector2(800,600)}
 
-onready var video_settings: Dictionary
+@onready var video_settings: Dictionary
 
 func _ready() -> void:
 	load_window_settings()
-	Signals.connect("scene_loaded", self, "scene_loaded")
+	Signals.connect("scene_loaded", Callable(self, "scene_loaded"))
 
 func _process(_delta):
 	pass
@@ -50,10 +50,12 @@ func load_window_settings():
 				"resolution": "1280x720",
 				"fullscreen": false,}
 			}
-		file.store_line(JSON.print(data, "\t"))
+		file.store_line(JSON.stringify(data, "\t"))
 		file.close()
 	save_file.open(option_path, File.READ)
-	var settings_data = JSON.parse(save_file.get_as_text())
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(save_file.get_as_text())
+	var settings_data = test_json_conv.get_data()
 	#print(typeof(settings_data.result))
 	if "video" in settings_data.result.keys():
 		video_settings = settings_data.result["video"]
@@ -62,15 +64,15 @@ func load_window_settings():
 
 func load_video_settings(settings: Dictionary) -> void:
 	if settings.vsync:
-		OS.set_use_vsync(true)
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if (true) else DisplayServer.VSYNC_DISABLED)
 	if settings.fullscreen:
-		OS.set_window_fullscreen(true)
+		get_window().mode = Window.MODE_EXCLUSIVE_FULLSCREEN if (true) else Window.MODE_WINDOWED
 	else:
-		OS.set_window_size(Resolutions[settings.resolution])
+		get_window().set_size(Resolutions[settings.resolution])
 		OS.center_window()
 
 
-func change_scene(scene: String) -> void:
+func change_scene_to_file(scene: String) -> void:
 # warning-ignore:return_value_discarded
 	# if in menu
 	# makes screen black
@@ -78,9 +80,9 @@ func change_scene(scene: String) -> void:
 		get_node("/root/GameWorld").visible = false
 	transition = true
 	$AnimationPlayer.play("dissolve")
-	yield($AnimationPlayer, "animation_finished")
+	await $AnimationPlayer.animation_finished
 	if scene in menu_scenes.keys():
-		get_tree().change_scene(menu_scenes[scene])
+		get_tree().change_scene_to_file(menu_scenes[scene])
 		if current_bgm != "menu":
 			AudioControl.bgm.set_stream(GameData.bgm_dict["menu"])
 			current_bgm = "menu"
@@ -88,13 +90,13 @@ func change_scene(scene: String) -> void:
 		if current_bgm == "menu":
 			Global.current_map = scene
 # warning-ignore:return_value_discarded
-			get_tree().change_scene("res://scenes/maps/GameWorld/GameWorld.tscn")
+			get_tree().change_scene_to_file("res://scenes/maps/GameWorld/GameWorld.tscn")
 			# if in map
 		else:
 			# warning-ignore:return_value_discarded
 			Global.current_map = scene
 			get_node("/root/GameWorld").load_map(GameData.map_dict[scene]["path"])
-			yield(get_tree().create_timer(0.5), "timeout")
+			await get_tree().create_timer(0.5).timeout
 		# if map different bgm
 		if GameData.map_dict[scene]["bgm"] != current_bgm:
 			current_bgm = GameData.map_dict[scene]["bgm"]

@@ -1,6 +1,6 @@
-extends ViewportContainer
+extends SubViewportContainer
 
-onready var _ViewPort = $Viewport
+@onready var _ViewPort = $SubViewport
 
 
 # Called when the node enters the scene tree for the first time.

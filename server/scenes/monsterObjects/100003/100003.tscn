@@ -11,7 +11,7 @@ extents = Vector2( 35.7144, 45.125 )
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 41.4286, 46.25 )
 
-[node name="100003" type="KinematicBody2D" groups=["enemy"]]
+[node name="100003" type="CharacterBody2D" groups=["enemy"]]
 scale = Vector2( 0.7, 0.4 )
 collision_layer = 16
 collision_mask = 0
@@ -22,10 +22,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -40.0
-margin_top = -47.0
-margin_right = 40.0
-margin_bottom = 48.0
+offset_left = -40.0
+offset_top = -47.0
+offset_right = 40.0
+offset_bottom = 48.0
 color = Color( 0.878431, 0.0156863, 1, 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -2,9 +2,9 @@ extends Popup
 
 var skill_id: String
 
-onready var skillName = $Background/MarginContainer/VBoxContainer/Label
-onready var description = $Background/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Label
-onready var skillIcon = $Background/MarginContainer/VBoxContainer/HBoxContainer/TextureRect
+@onready var skillName = $Background/MarginContainer/VBoxContainer/Label
+@onready var description = $Background/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Label
+@onready var skillIcon = $Background/MarginContainer/VBoxContainer/HBoxContainer/TextureRect
 #onready var skill_path = "res://assets/skillSprites/"
 
 func _ready() -> void:

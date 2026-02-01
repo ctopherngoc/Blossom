@@ -1,11 +1,11 @@
 extends HBoxContainer
 
-onready var ResolutionOptionButton = $VideoOptions/RESO/ResolutionOptionButton
-onready var FullscreenToggle = $VideoOptions/Windowed/ResoToggle
-onready var VsyncToggle = $VideoOptions/VSYNC/VsyncToggle
-onready var MSAASlider = $VideoOptions/MSAA/MSAASLIDER
-onready var FXAAToggle = $VideoOptions/FXAA/FxaaToggle
-onready var FPSOptionButton = $VideoOptions/FPS/FPSOptionButton
+@onready var ResolutionOptionButton = $VideoOptions/RESO/ResolutionOptionButton
+@onready var FullscreenToggle = $VideoOptions/Windowed/ResoToggle
+@onready var VsyncToggle = $VideoOptions/VSYNC/VsyncToggle
+@onready var MSAASlider = $VideoOptions/MSAA/MSAASLIDER
+@onready var FXAAToggle = $VideoOptions/FXAA/FxaaToggle
+@onready var FPSOptionButton = $VideoOptions/FPS/FPSOptionButton
 
 var current_res = "1280x720"
 
@@ -35,11 +35,11 @@ var FullScreen: bool
 # Called when the node enters the scene tree for the first time.
 
 func _ready():
-	FullscreenToggle.set_pressed_no_signal(OS.is_window_fullscreen())
-	VsyncToggle.set_pressed_no_signal(OS.is_vsync_enabled())
+	FullscreenToggle.set_pressed_no_signal(((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN)))
+	VsyncToggle.set_pressed_no_signal((DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED))
 	FXAAToggle.set_pressed_no_signal(get_viewport().get_use_fxaa())
 	#MSAASlider.set_value(get_viewport().get_msaa())
-	ResolutionOptionButton.set_disabled(OS.is_window_fullscreen())
+	ResolutionOptionButton.set_disabled(((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN)))
 	AddResolutions()
 
 func AddResolutions():
@@ -55,16 +55,16 @@ func AddResolutions():
 func _on_ResolutionOptionButton_item_selected(index):
 	AudioControl.play_audio("menuClick")
 	var size = Resolutions.get(ResolutionOptionButton.get_item_text(index))
-	OS.set_window_size(size)
+	get_window().set_size(size)
 	OS.center_window()
 	
 func _on_ResoToggle_toggled(button_pressed):
 	AudioControl.play_audio("menuClick")
-	OS.set_window_fullscreen(button_pressed)
+	get_window().mode = Window.MODE_EXCLUSIVE_FULLSCREEN if (button_pressed) else Window.MODE_WINDOWED
 	
 	ResolutionOptionButton.set_disabled(button_pressed)
-	ResolutionOptionButton.set_text(String(OS.get_screen_size().x)+"x"+String(OS.get_screen_size().y))
-	print(String(OS.get_screen_size().x)+"x"+String(OS.get_screen_size().y))
+	ResolutionOptionButton.set_text(String(DisplayServer.screen_get_size().x)+"x"+String(DisplayServer.screen_get_size().y))
+	print(String(DisplayServer.screen_get_size().x)+"x"+String(DisplayServer.screen_get_size().y))
 
 	if button_pressed == false:
 		
@@ -72,14 +72,14 @@ func _on_ResoToggle_toggled(button_pressed):
 		ResolutionOptionButton.set_text(ResolutionOptionButton.get_item_text(5))
 		var size = Resolutions["1280x720"]
 		
-		OS.set_window_size(size)
+		get_window().set_size(size)
 		OS.center_window()
 
-	OS.set_window_resizable(button_pressed)# Disable for linux(buggy)/Enable for Windows
+	get_window().unresizable = not (button_pressed)# Disable for linux(buggy)/Enable for Windows
 
 func _on_VsyncToggle_toggled(button_pressed):
 	AudioControl.play_audio("menuClick")
-	OS.set_use_vsync(button_pressed)
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if (button_pressed) else DisplayServer.VSYNC_DISABLED)
 
 func _on_HSlider_value_changed(value):
 	print(value)
@@ -95,12 +95,12 @@ func _on_Button_mouse_entered():
 
 func load_settings(settings: Dictionary) -> void:
 	if settings.vsync:
-		OS.set_use_vsync(true)
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if (true) else DisplayServer.VSYNC_DISABLED)
 	if settings.fullscreen:
-		OS.set_window_fullscreen(true)
+		get_window().mode = Window.MODE_EXCLUSIVE_FULLSCREEN if (true) else Window.MODE_WINDOWED
 		ResolutionOptionButton.set_disabled(true)
-		ResolutionOptionButton.set_text(String(OS.get_screen_size().x)+"x"+String(OS.get_screen_size().y))
-		print(String(OS.get_screen_size().x)+"x"+String(OS.get_screen_size().y))
+		ResolutionOptionButton.set_text(String(DisplayServer.screen_get_size().x)+"x"+String(DisplayServer.screen_get_size().y))
+		print(String(DisplayServer.screen_get_size().x)+"x"+String(DisplayServer.screen_get_size().y))
 	if settings.has("fps"):
 		var index = 0
 		for r in FPS.keys():

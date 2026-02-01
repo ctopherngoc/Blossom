@@ -1,18 +1,18 @@
-extends KinematicBody2D
+extends CharacterBody2D
 
-onready var attack_timer = $Timers/AttackTimer
-onready var idle_timer = $Timers/IdleTimer
-onready var damage_timer = $Timers/DamageTimer
-onready var logging_timer = $Timers/LoggingTimer
+@onready var attack_timer = $Timers/AttackTimer
+@onready var idle_timer = $Timers/IdleTimer
+@onready var damage_timer = $Timers/DamageTimer
+@onready var logging_timer = $Timers/LoggingTimer
 #onready var animation = $AnimationPlayer
-onready var loot_node = $loot_box
-onready var loot_timer = $Timers/LootTimer
-onready var CDTimer = $Timers/CDTimer
-onready var BuffTimer = $Timers/BuffTimer
-onready var attack_range = $attack_range
+@onready var loot_node = $loot_box
+@onready var loot_timer = $Timers/LootTimer
+@onready var CDTimer = $Timers/CDTimer
+@onready var BuffTimer = $Timers/BuffTimer
+@onready var attack_range = $attack_range
 #contains token and id
 var db_info = {}
-onready var loggedin = true
+@onready var loggedin = true
 
 # post firestore convert
 # possible hashmap or references
@@ -21,15 +21,14 @@ var email = ""
 var characters = []
 var characters_info_list = []
 var current_character
-onready var cooldowns: Dictionary = {}
-onready var buffs: Dictionary = {}
+@onready var cooldowns: Dictionary = {}
+@onready var buffs: Dictionary = {}
 #################
 
 var mobs_hit = []
 var idle_counter = 0
-onready var input_queue = []
+@onready var input_queue = []
 var cur_position = null
-var velocity = Vector2.ZERO
 
 # change to one variable
 var is_climbing = false
@@ -47,7 +46,7 @@ var hittable = true
 var looting = false
 
 # sprite string to put in ws
-onready var sprite = []
+@onready var sprite = []
 
 #implement animation again
 """
@@ -59,7 +58,7 @@ a: attack key {
 	3 = ready
 }
 """
-onready var animation_state = {
+@onready var animation_state = {
 	"c": 0,
 	"f": 1,
 	"d": 1,
@@ -68,7 +67,7 @@ onready var animation_state = {
 
 ########
 #temp
-onready var recon_arr = {
+@onready var recon_arr = {
 	"input_arr": [],
 	"velocity": Vector2(0,0),
 	"mns": null,
@@ -76,8 +75,11 @@ onready var recon_arr = {
 	"m_vector": null,
 }
 
-onready var equip_array = ["headgear", "top", "bottom", "rweapon", "lweapon", "eyeacc", "earring", "faceacc", "glove", "tattoo"]
+@onready var equip_array = ["headgear", "top", "bottom", "rweapon", "lweapon", "eyeacc", "earring", "faceacc", "glove", "tattoo"]
 ########
+
+func _ready():
+	velocity = Vector2.ZERO
 
 func _physics_process(delta: float) -> void:
 	if loggedin:
@@ -86,9 +88,9 @@ func _physics_process(delta: float) -> void:
 				animation_state.a = 0
 				
 			movement_loop(delta)
-			if not cooldowns.empty() and CDTimer.is_stopped():
+			if not cooldowns.is_empty() and CDTimer.is_stopped():
 				CDTimer.start()
-			if not buffs.empty() and BuffTimer.is_stopped():
+			if not buffs.is_empty() and BuffTimer.is_stopped():
 				BuffTimer.start()
 
 func get_animation() -> Dictionary:
@@ -273,16 +275,24 @@ func movement_loop(delta: float) -> void:
 	recon_arr["m_vector"] = move_vector
 	change_direction()
 	# change get velocity
-	get_velocity(move_vector, delta)
+	custom_get_velocity(move_vector, delta)
 	recon_arr["velocity"] = velocity
 	# warning-ignore:return_value_discarded
 	recon_arr["start_pos"] = self.global_position
-	move_and_slide(velocity, Vector2.UP)
-	recon_arr["mns"] = move_and_slide(velocity, Vector2.UP)
+	set_velocity(velocity)
+	set_up_direction(Vector2.UP)
+	move_and_slide()
+	set_velocity(velocity)
+	set_up_direction(Vector2.UP)
+	move_and_slide()
+	recon_arr["mns"] = velocity
 	recon_arr["end_pos"] = self.global_position
 
 	if is_on_floor() or !is_climbing:
-		velocity = move_and_slide(velocity, Vector2.UP)
+		set_velocity(velocity)
+		set_up_direction(Vector2.UP)
+		move_and_slide()
+		velocity = velocity
 	if is_climbing:
 		animation_state["c"] = 1
 		velocity.x = 0
@@ -291,7 +301,7 @@ func movement_loop(delta: float) -> void:
 
 func get_movement_vector() -> Vector2:
 	var moveVector = Vector2.ZERO
-	if !input_queue.empty():
+	if !input_queue.is_empty():
 		input = input_queue.pop_front()
 	else:
 		# [up, down, left, right, jump, loot]
@@ -318,7 +328,7 @@ func get_movement_vector() -> Vector2:
 			moveVector.y = 0
 	return moveVector
 
-func get_velocity(move_vector: Vector2, delta: float) -> void:
+func custom_get_velocity(move_vector: Vector2, delta: float) -> void:
 	velocity.x += move_vector.x * horizontal_speed
 	# slow down movement
 	if(move_vector.x == 0):
@@ -380,7 +390,7 @@ func get_velocity(move_vector: Vector2, delta: float) -> void:
 ################################
 # edit so direction can be sent through world_state
 func change_direction() -> void:
-	if !input.empty():
+	if !input.is_empty():
 		if input[3] == 1 && !attacking:
 			if velocity.x < 0 && is_on_floor():
 				velocity.x = 0
@@ -469,7 +479,7 @@ func _on_loot_timer_timeout():
 	looting = false
 
 func _on_CDTimer_timeout():
-	if not cooldowns.empty():
+	if not cooldowns.is_empty():
 		var skills = cooldowns.keys()
 		for skill in skills:
 			if cooldowns[skill] == 1:
@@ -481,7 +491,7 @@ func _on_CDTimer_timeout():
 		CDTimer.stop()
 
 func _on_BuffTimer_timeout():
-	if not buffs.empty():
+	if not buffs.is_empty():
 		var buff_list = buffs.keys()
 		for buff in buff_list:
 			if buffs[buff] == 1:

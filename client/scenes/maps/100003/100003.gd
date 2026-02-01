@@ -1,7 +1,7 @@
 extends Node2D
 var map_id = "100003"
 var map_name = "Grassy Road 3"
-onready var monsters = $Monsters
+@onready var monsters = $Monsters
 var spawn_location = Vector2(350, -550)
 
 var map_bound = {
@@ -14,15 +14,15 @@ var map_bound = {
 #teleporter end locations
 #onready var teleporter1 : Label = $MapObjects/T1/Label
 #onready var teleporter2 : Label = $MapObjects/T2/Label
-onready var teleporter = [Vector2(-135, -225.500488), Vector2(657.772644, -225.575974)]
+@onready var teleporter = [Vector2(-135, -225.500488), Vector2(657.772644, -225.575974)]
 
 func _ready():
 # warning-ignore:unused_variable
 	var gameWorld = self.get_parent().get_parent()
 
 	Global.change_background()
-	if Global.player.map != get_filename():
-		Global.update_lastmap(get_filename())
+	if Global.player.map != get_scene_file_path():
+		Global.update_lastmap(get_scene_file_path())
 	
 	$Player.camera.limit_left = map_bound["left"]
 	$Player.camera.limit_right = map_bound["right"]

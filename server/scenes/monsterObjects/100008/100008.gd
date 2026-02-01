@@ -1,12 +1,12 @@
-extends KinematicBody2D
+extends CharacterBody2D
 var id = "100008"
 var location = null
 var map_id = null
 var state = "idle"
 var stats = {}
 var damage_taken: Array = []
-onready var parent
-onready var miss_counter = 0
+@onready var parent
+@onready var miss_counter = 0
 
 var rng = RandomNumberGenerator.new()
 var velocity = Vector2.ZERO
@@ -15,10 +15,10 @@ var gravity = 1600
 var speed_factor = 0.5
 var move_state
 var attackers = {}
-onready var hit_timer = $Timer2
-onready var target_node
-onready var target_position
-onready var sprite_scale = Vector2(0.7, 0.4)
+@onready var hit_timer = $Timer2
+@onready var target_node
+@onready var target_position
+@onready var sprite_scale = Vector2(0.7, 0.4)
 
 func _ready():
 	stats = ServerData.monsterTable[self.id].duplicate(true)
@@ -79,10 +79,13 @@ func _process(delta):
 				else:
 					velocity.x = 0
 		velocity.y += gravity * delta
-		velocity = move_and_slide(velocity, Vector2.UP)
+		set_velocity(velocity)
+		set_up_direction(Vector2.UP)
+		move_and_slide()
+		velocity = velocity
 
 func _on_Timer_timeout():
-	move_state = floor(rand_range(0,3))
+	move_state = floor(randf_range(0,3))
 
 func touch_damage():
 	if $do_damage.get_overlapping_areas().size() > 0:
@@ -109,7 +112,7 @@ func start_hit_timer() -> void:
 	hit_timer.start()
 	
 func get_target() -> String:
-	if attackers.empty():
+	if attackers.is_empty():
 		return "none"
 	else:
 		var players = attackers.keys()

@@ -1,9 +1,9 @@
 extends CenterContainer
-onready var tab
-onready var slot_index
-onready var type = "inventory"
-onready var equip_info = preload("res://scenes/userInerface/ItemInfo/EquipInfo.tscn")
-onready var item_info = preload("res://scenes/userInerface/ItemInfo/ItemInfo.tscn")
+@onready var tab
+@onready var slot_index
+@onready var type = "inventory"
+@onready var equip_info = preload("res://scenes/userInerface/ItemInfo/EquipInfo.tscn")
+@onready var item_info = preload("res://scenes/userInerface/ItemInfo/ItemInfo.tscn")
 var tab_dict = {"equipment": 0, "use": 1, "etc": 2}
 
 var item_data = {
@@ -11,21 +11,21 @@ var item_data = {
 	"item": null,
 }
 
-onready var item_info_child_list: Array
+@onready var item_info_child_list: Array
 
-onready var icon = $Icon
-onready var label = $VBoxContainer/Label
+@onready var icon = $Icon
+@onready var label = $VBoxContainer/Label
 var dragging = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 # warning-ignore:return_value_discarded
-	Signals.connect("toggle_inventory", self, "item_info_free")
+	Signals.connect("toggle_inventory", Callable(self, "item_info_free"))
 	
 func _notification(what):
 	if what == 22:
 		item_info_free()
 
-func get_drag_data(_pos):
+func _get_drag_data(_pos):
 	dragging = true
 	# if slot is not null
 	#if Global.player.inventory[tab][slot_index] != null:
@@ -41,17 +41,17 @@ func get_drag_data(_pos):
 		var drag_texture = TextureRect.new()
 		drag_texture.expand = true
 		drag_texture.texture = icon.texture
-		drag_texture.rect_size = Vector2(60, 60)
+		drag_texture.size = Vector2(60, 60)
 		
 		var control = Control.new()
 		control.add_child(drag_texture)
-		drag_texture.rect_position = -0.5 * drag_texture.rect_size
+		drag_texture.position = -0.5 * drag_texture.size
 		set_drag_preview(control)
 		
 		print(data)
 		return data
 
-func can_drop_data(_pos, data):
+func _can_drop_data(_pos, data):
 	if data.has("slot"):
 		if tab == "equipment":
 			# slot empty
@@ -86,7 +86,7 @@ func can_drop_data(_pos, data):
 			else:
 				return false
 
-func drop_data(_pos,data):
+func _drop_data(_pos,data):
 	# temp vars to hold each slots info
 	var drag_icon = data.item_data
 	var drop_icon = item_data
@@ -162,13 +162,13 @@ update server char inventory data -> client remote func to update character data
 """
 func _gui_input(event):
 	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			if item_data.id:
 				AudioControl.play_audio("menuClick")
 
 func _on_0_gui_input(event):
 	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT and event.pressed and event.is_doubleclick():
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed and event.is_double_click():
 			if item_data.id == null:
 				print("empty")
 			elif GameData.itemTable[item_data.id].itemType == "use":
@@ -196,30 +196,30 @@ func _on_0_mouse_entered():
 		pass
 	else:
 		if GameData.itemTable[str(item_data.id)].itemType == "equipment" and tab == "equipment":
-			var equip_tip = equip_info.instance()
+			var equip_tip = equip_info.instantiate()
 			equip_tip.origin = "Inventory"
 			equip_tip.slot = slot_index
 			equip_tip.tab = tab
-			var inventory_origin = get_node("/root/GameWorld/UI/Control/Inventory").rect_global_position
-			equip_tip.rect_position.x = inventory_origin.x - (equip_tip.rect_size.x *  equip_tip.rect_scale.x) + 5
-			equip_tip.rect_position.y = inventory_origin.y
+			var inventory_origin = get_node("/root/GameWorld/UI/Control/Inventory").global_position
+			equip_tip.position.x = inventory_origin.x - (equip_tip.size.x *  equip_tip.scale.x) + 5
+			equip_tip.position.y = inventory_origin.y
 			add_child(equip_tip)
-			yield(get_tree().create_timer(0.35), "timeout")
+			await get_tree().create_timer(0.35).timeout
 			if has_node("ItemInfo") and get_node("ItemInfo").valid:
 				#print("Show equipinfo")
 				get_node("ItemInfo").show()
 		else:
 			#item_info
-			var item_tip = item_info.instance()
+			var item_tip = item_info.instantiate()
 			item_tip.origin = "Inventory"
 			item_tip.slot = slot_index
 			item_tip.tab = tab
 			#var inventory_origin = get_node("/root/currentScene/UI/Control/Inventory").get_global_transform_with_canvas().origin
-			var inventory_origin = get_node("/root/GameWorld/UI/Control/Inventory").rect_global_position
-			item_tip.rect_position.x = inventory_origin.x - (item_tip.rect_size.x * item_tip.rect_scale.x) + 5
-			item_tip.rect_position.y = inventory_origin.y
+			var inventory_origin = get_node("/root/GameWorld/UI/Control/Inventory").global_position
+			item_tip.position.x = inventory_origin.x - (item_tip.size.x * item_tip.scale.x) + 5
+			item_tip.position.y = inventory_origin.y
 			add_child(item_tip)
-			yield(get_tree().create_timer(0.35), "timeout")
+			await get_tree().create_timer(0.35).timeout
 			if has_node("ItemInfo") and get_node("ItemInfo").valid:
 				#print("Show item_tip")
 				get_node("ItemInfo").show()

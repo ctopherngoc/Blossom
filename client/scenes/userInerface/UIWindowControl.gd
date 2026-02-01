@@ -1,12 +1,12 @@
 extends Control
 
-onready var quantity_popup = preload("res://scenes/menuObjects/PopupMenus/drop_quantity_popup.tscn")
-onready var drop_confirm_popup = preload("res://scenes/menuObjects/PopupMenus/drop_confirm_popup.tscn")
-onready var fps_counter = $GameInfo/HBoxContainer/FPSCounter
-onready var ping_counter = $GameInfo/HBoxContainer/PingCounter
+@onready var quantity_popup = preload("res://scenes/menuObjects/PopupMenus/drop_quantity_popup.tscn")
+@onready var drop_confirm_popup = preload("res://scenes/menuObjects/PopupMenus/drop_confirm_popup.tscn")
+@onready var fps_counter = $GameInfo/HBoxContainer/FPSCounter
+@onready var ping_counter = $GameInfo/HBoxContainer/PingCounter
 
 var non_movable_windows = ["InGameMenu", "PlayerHUD", "ChatBox", "DebuggerWindow", "HotKeys", "ButtonBar", "GameInfo", "MessageBar"]
-onready var ui_nodes = {
+@onready var ui_nodes = {
 	'player_stats': get_node("PlayerStats"),
 	'inventory': get_node("Inventory"),
 	'chat_box': $ChatBox,
@@ -21,7 +21,7 @@ func _ready():
 	for window in get_children():
 		if not window.name in non_movable_windows:
 			print(window.name)
-			window.connect('move_to_top', self, 'move_window_to_top')
+			window.connect('move_before', Callable(self, 'move_window_to_top'))
 
 func move_window_to_top(node):
 	move_child(node, get_child_count() - non_movable_windows.size())
@@ -35,18 +35,18 @@ data["origin_node"] = self
 		data["from_slot"] = slot_index
 		data["tab"] = tab
 		"""
-func drop_data(_pos, data):
+func _drop_data(_pos, data):
 	if data.has("item_data"):
 		if not GameData.itemTable[data.item_data.id].droppable:
 			print("are you sure you want to drop?")
-			var drop_confirm =  drop_confirm_popup.instance()
+			var drop_confirm =  drop_confirm_popup.instantiate()
 			drop_confirm.data = data
 			self.add_child(drop_confirm)
 		elif data.item_data.q:
 			print(data.item_data)
 			if data.item_data.q > 1:
 				print("popup more than 1 dropped")
-				var new_quantity_popup = quantity_popup.instance()
+				var new_quantity_popup = quantity_popup.instantiate()
 				new_quantity_popup.data = data
 				self.add_child(new_quantity_popup)
 				#Server.drop_request(data.from_slot, data.tab, quantity)
@@ -76,7 +76,7 @@ func drop_data(_pos, data):
 		Server.remove_keybind(data.origin_node.name)
 	
 # warning-ignore:unused_argument
-func can_drop_data(_pos, data):
+func _can_drop_data(_pos, data):
 	#print("in can drop data")
 	if data.has("slot"):
 		return false

@@ -13,17 +13,17 @@ position = Vector2( 1, -5 )
 shape = SubResource( 1 )
 
 [node name="Label" type="Label" parent="."]
-margin_left = -31.0
-margin_top = 7.0
-margin_right = 39.0
-margin_bottom = 27.0
+offset_left = -31.0
+offset_top = 7.0
+offset_right = 39.0
+offset_bottom = 27.0
 text = "Teleporter"
 
 [node name="end" type="Label" parent="."]
-margin_left = -17.0
-margin_top = 26.0
-margin_right = 23.0
-margin_bottom = 40.0
+offset_left = -17.0
+offset_top = 26.0
+offset_right = 23.0
+offset_bottom = 40.0
 
 [connection signal="body_entered" from="." to="." method="_on_Teleporter_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_Teleporter_body_exited"]

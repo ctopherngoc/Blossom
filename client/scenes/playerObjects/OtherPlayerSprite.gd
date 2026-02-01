@@ -1,11 +1,11 @@
-extends Sprite
+extends Sprite2D
 
 var attack_dict = {}
 var attacking = false
-onready var sprite: Array
-onready var composite_sprite_node = $CompositeSprite
-onready var display_name = $Label
-onready var chat_box = $ChatBox
+@onready var sprite: Array
+@onready var composite_sprite_node = $CompositeSprite
+@onready var display_name = $Label
+@onready var chat_box = $ChatBox
 
 func move_player(new_position: Vector2, animation: Dictionary) -> void:
 	flip_sprite(animation.d)

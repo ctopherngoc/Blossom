@@ -1,24 +1,24 @@
 extends Control
 
 #onready var http : HTTPRequest = $HTTPRequest
-onready var username : LineEdit = $VBoxContainer/username/LineEdit
-onready var password : LineEdit = $VBoxContainer/password/LineEdit
-onready var notification : Label = $VBoxContainer/notification/Label
-onready var login_button : Button = $VBoxContainer/loginButton/Button
-onready var register_button: Button = $VBoxContainer/loginButton/RegisterButton
-onready var MainMenu = $VBoxContainer
-onready var OptionMenu = $Options
-onready var savelogin = false
-onready var login_file_path = "user://login.dat"
-onready var logging_in_bool = false
-onready var loaded = false
-onready var version_label = $Label
+@onready var username : LineEdit = $VBoxContainer/username/LineEdit
+@onready var password : LineEdit = $VBoxContainer/password/LineEdit
+@onready var notification : Label = $VBoxContainer/notification/Label
+@onready var login_button : Button = $VBoxContainer/loginButton/Button
+@onready var register_button: Button = $VBoxContainer/loginButton/RegisterButton
+@onready var MainMenu = $VBoxContainer
+@onready var OptionMenu = $Options
+@onready var savelogin = false
+@onready var login_file_path = "user://login.dat"
+@onready var logging_in_bool = false
+@onready var loaded = false
+@onready var version_label = $Label
 
 func _ready() -> void:
 	version_label.text = "V%s" % Global.version
 	# warning-ignore:return_value_discarded
-	Signals.connect("fail_login", self, "_fail_login")
-	Signals.connect("server_offline", self, "_server_offline")
+	Signals.connect("fail_login", Callable(self, "_fail_login"))
+	Signals.connect("server_offline", Callable(self, "_server_offline"))
 	load_settings()
 	Gateway.login_node = self
 
@@ -30,7 +30,7 @@ func _on_Button_pressed() -> void:
 
 func login_request() -> void:
 	notification.text = ""
-	if username.text.empty() or password.text.empty():
+	if username.text.is_empty() or password.text.is_empty():
 		notification.text = "Enter username and password"
 		logging_in_bool = false
 	else:
@@ -48,7 +48,7 @@ func _on_Button1_pressed():
 	Global.player = GameData.test_player
 	Server.testing = true
 	# warning-ignore:return_value_discarded
-	SceneHandler.change_scene("100000")
+	SceneHandler.change_scene_to_file("100000")
 
 func _on_Button2_pressed() -> void:
 	AudioControl.play_audio("menuClick")
@@ -63,7 +63,7 @@ func _on_back_pressed() -> void:
 
 func _on_RegisterButton_pressed() -> void:
 	AudioControl.play_audio("menuClick")
-	SceneHandler.change_scene("register")
+	SceneHandler.change_scene_to_file("register")
 
 func _on_Button_mouse_entered() -> void:
 	AudioControl.play_audio("menuHover")
@@ -109,7 +109,7 @@ func save_settings(save: bool) -> void:
 	else:
 		data ={ "login" : {
 					"save": false}}
-	file.store_line(JSON.print(data, "\t"))
+	file.store_line(JSON.stringify(data, "\t"))
 	file.close()
 
 func load_settings() -> void:
@@ -117,12 +117,14 @@ func load_settings() -> void:
 	if not save_file.file_exists(login_file_path):
 		return
 	save_file.open(login_file_path, File.READ)
-	var settings_data = JSON.parse(save_file.get_as_text())
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(save_file.get_as_text())
+	var settings_data = test_json_conv.get_data()
 	var login_settings = settings_data.result["login"]
 	if login_settings.save:
 		if login_settings.has("email"):
 			$VBoxContainer/username/LineEdit.text = login_settings.email
-			$VBoxContainer/loginButton/CheckBox.pressed = true
+			$VBoxContainer/loginButton/CheckBox.button_pressed = true
 	print("Email Loaded")
 	save_file.close()
 	loaded = true

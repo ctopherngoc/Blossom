@@ -6,18 +6,18 @@
 ######################################################################
 
 extends Node
-onready var version: String = "4.1.0"
-onready var local: bool = true
-onready var ip: String
-onready var input_queue: Array = []
-onready var interpolation_offset: int = 200
-onready var current_map: String = ""
-onready var in_game = false
-onready var floating_text = preload("res://scenes/userInerface/FloatingText.tscn")
-onready var projectile = preload("res://scenes/skillObjects/Projectile.tscn")
-onready var last_recon
-onready var login_timer = $Timer
-onready var quest_data: Array
+@onready var version: String = "4.1.0"
+@onready var local: bool = true
+@onready var ip: String
+@onready var input_queue: Array = []
+@onready var interpolation_offset: int = 200
+@onready var current_map: String = ""
+@onready var in_game = false
+@onready var floating_text = preload("res://scenes/userInerface/FloatingText.tscn")
+@onready var projectile = preload("res://scenes/skillObjects/Projectile.tscn")
+@onready var last_recon
+@onready var login_timer = $Timer
+@onready var quest_data: Array
 
 var player_template = preload("res://scenes/playerObjects/OtherPlayerSprite.tscn")
 var player_node
@@ -45,13 +45,13 @@ var default_keybind = {
 # loads player info
 func _ready() -> void:
 # warning-ignore:return_value_discarded
-	Signals.connect("log_out", self, "log_out")
+	Signals.connect("log_out", Callable(self, "log_out"))
 
 func update_lastmap(map: String) -> void:
 	last_map = map
 	
 func change_background() -> void:
-	VisualServer.set_default_clear_color(Color(0.4,0.4,0.4,1.0))
+	RenderingServer.set_default_clear_color(Color(0.4,0.4,0.4,1.0))
 		
 func update_world_state(world_state: Dictionary) -> void:
 	if world_state["T"] > last_world_state:
@@ -77,7 +77,7 @@ func _physics_process(_delta: float) -> void:
 				if current_map != world_state_buffer[2]["ID"]:
 					return
 				for player_state in world_state_buffer[2]["P"].keys():
-					if player_state == get_tree().get_network_unique_id():
+					if player_state == get_tree().get_unique_id():
 						continue
 					if not world_state_buffer[1]["P"].has(player_state):
 						continue
@@ -207,7 +207,7 @@ func _physics_process(_delta: float) -> void:
 					return
 				var extrapolation_factor = float(render_time - world_state_buffer[0]["T"]) / float(world_state_buffer[1]["T"] - world_state_buffer[0]["T"]) - 1.00
 				for player_state in world_state_buffer[1]["P"].keys():
-					if player_state == get_tree().get_network_unique_id():
+					if player_state == get_tree().get_unique_id():
 						continue
 					if not world_state_buffer[0]["P"].has(player_state):
 						continue
@@ -325,10 +325,10 @@ func _physics_process(_delta: float) -> void:
 				
 
 func spawn_new_player(player_id: int, player_state: Dictionary) -> void:
-	if player_id == get_tree().get_network_unique_id():
+	if player_id == get_tree().get_unique_id():
 		pass
 	else:
-		var new_player = player_template.instance()
+		var new_player = player_template.instantiate()
 		new_player.position = get_node("/root/GameWorld/MapNode/%s" % Global.current_map).spawn_location
 		new_player.name = str(player_id)
 		get_node("/root/GameWorld/MapNode/%s/OtherPlayers" % Global.current_map).add_child(new_player)
@@ -344,7 +344,7 @@ func despawn_player(player_id: int) -> void:
 		character_node.queue_free()
 		
 func spawn_monster(monster_id: int, monster_dict: Dictionary) -> void:
-	var monster = GameData.monster_preload[monster_dict['id']].instance()
+	var monster = GameData.monster_preload[monster_dict['id']].instantiate()
 	monster.monster_id = monster_dict['id']
 	monster.position = monster_dict["EnemyLocation"]
 	monster.title = GameData.monsterTable[monster_dict["id"]]["title"]
@@ -359,12 +359,12 @@ func spawn_item(name: String, item_dict: Dictionary) -> void:
 	worldstate[item integer >= 0 ]: {"P": item.position, "I": item.id}
 	"""
 	if item_dict['I'] == "100000":
-		var item = GameData.item_preload["100000"].instance()
+		var item = GameData.item_preload["100000"].instantiate()
 		item.position = item_dict["P"]
 		item.name = name
 		get_node("/root/GameWorld/MapNode/%s/Items" % Global.current_map).add_child(item, true)
 	else:
-		var item = GameData.item_preload["item"].instance()
+		var item = GameData.item_preload["item"].instantiate()
 		item.position = item_dict["P"]
 		item.name = name
 		item.id = item_dict["I"]
@@ -372,7 +372,7 @@ func spawn_item(name: String, item_dict: Dictionary) -> void:
 		get_node("/root/GameWorld/MapNode/%s/Items" % Global.current_map).add_child(item, true)
 
 func spawn_projectile(name: String, projectile_world_state: Dictionary) -> void:
-	var new_projectile = projectile.instance()
+	var new_projectile = projectile.instantiate()
 	new_projectile.name = name
 	new_projectile.texture = load(GameData.skill_class_dictionary[projectile_world_state["I"]].projectile_sprite)
 	new_projectile.position = projectile_world_state["P"]

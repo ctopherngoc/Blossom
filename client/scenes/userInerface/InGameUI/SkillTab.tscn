@@ -1,12 +1,12 @@
 [gd_scene format=2]
 
-[node name="0" type="Tabs"]
+[node name="0" type="TabBar"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 46.0
-margin_right = -4.0
-margin_bottom = -4.0
+offset_left = 4.0
+offset_top = 46.0
+offset_right = -4.0
+offset_bottom = -4.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 scrolling_enabled = false
@@ -21,9 +21,9 @@ __meta__ = {
 }
 
 [node name="GridContainer" type="GridContainer" parent="ScrollContainer"]
-margin_right = 1272.0
-margin_bottom = 670.0
+offset_right = 1272.0
+offset_bottom = 670.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_constants/vseparation = 4
-custom_constants/hseparation = 4
+theme_override_constants/v_separation = 4
+theme_override_constants/h_separation = 4

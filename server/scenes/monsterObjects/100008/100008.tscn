@@ -11,17 +11,17 @@ extents = Vector2( 52.8573, 81.25 )
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 58.5714, 81.25 )
 
-[node name="100008" type="KinematicBody2D" groups=["enemy"]]
+[node name="100008" type="CharacterBody2D" groups=["enemy"]]
 scale = Vector2( 0.7, 0.4 )
 collision_layer = 16
 collision_mask = 0
 script = ExtResource( 1 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
-margin_left = -56.0
-margin_top = -82.0
-margin_right = 56.0
-margin_bottom = 80.0
+offset_left = -56.0
+offset_top = -82.0
+offset_right = 56.0
+offset_bottom = 80.0
 color = Color( 0.835294, 0.505882, 1, 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

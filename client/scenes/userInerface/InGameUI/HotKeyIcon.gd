@@ -1,20 +1,20 @@
 extends CenterContainer
 
-onready var icon = $Icon
-onready var quantity_label = $Item/Quantity
-onready var bg = $TextureRect
-onready var label = $Label
+@onready var icon = $Icon
+@onready var quantity_label = $Item/Quantity
+@onready var bg = $TextureRect
+@onready var label = $Label
 
-onready var hotkey_data
+@onready var hotkey_data
 
-onready var empty_bg = "res://assets/UI/background/hotkey_background.png"
-onready var active_bg = "res://assets/UI/background/hotkey_background_used.png"
+@onready var empty_bg = "res://assets/UI/background/hotkey_background.png"
+@onready var active_bg = "res://assets/UI/background/hotkey_background_used.png"
 
 func _ready():
 	# warning-ignore:return_value_discarded
-	Signals.connect("update_keybinds", self, "update_hotkey")
+	Signals.connect("update_keybinds", Callable(self, "update_hotkey"))
 
-func get_drag_data(_pos):
+func _get_drag_data(_pos):
 	if Global.player.keybind[self.name]:
 		var data = {}
 		data["origin_node"] = self
@@ -27,23 +27,23 @@ func get_drag_data(_pos):
 			var drag_texture = TextureRect.new()
 			drag_texture.expand = true
 			drag_texture.texture = icon.texture
-			drag_texture.rect_size = Vector2(50, 50)
+			drag_texture.size = Vector2(50, 50)
 			#drag_texture.modulate = Color(0,0,0,155)
 			
 			var drag_label = Label.new()
 			drag_label.text = self.label.text
 			drag_label.align = 1
 			drag_label.valign = 0
-			var dynamic_font = DynamicFont.new()
+			var dynamic_font = FontFile.new()
 			dynamic_font.font_data = load("res://assets/fonts/droid-sans/DroidSans.ttf")
-			drag_label.add_font_override("font", dynamic_font)
+			drag_label.add_theme_font_override("font", dynamic_font)
 			dynamic_font.size = 10
-			drag_label.rect_size = Vector2(32,32)
+			drag_label.size = Vector2(32,32)
 			
 			var control = Control.new()
 			control.add_child(drag_texture)
 			control.add_child(drag_label)
-			drag_texture.rect_position = -0.5 * drag_texture.rect_size
+			drag_texture.position = -0.5 * drag_texture.size
 			set_drag_preview(control)
 		
 		else:
@@ -59,16 +59,16 @@ func get_drag_data(_pos):
 			var drag_texture = TextureRect.new()
 			drag_texture.expand = true
 			drag_texture.texture = icon.texture
-			drag_texture.rect_size = Vector2(50, 50)
+			drag_texture.size = Vector2(50, 50)
 			
 			var control = Control.new()
 			control.add_child(drag_texture)
-			drag_texture.rect_position = -0.5 * drag_texture.rect_size
+			drag_texture.position = -0.5 * drag_texture.size
 			set_drag_preview(control)
 		
 		return data
 
-func drop_data(_pos, data):
+func _drop_data(_pos, data):
 	if hotkey_data:
 		if data.origin_node == self:
 			print("same node")
@@ -139,7 +139,7 @@ func drop_data(_pos, data):
 			Server.update_keybind(self.name, "keybind", data.keybind_data.id)
 	
 # warning-ignore:unused_argument
-func can_drop_data(_pos, data):
+func _can_drop_data(_pos, data):
 	print("in %s hotkey" % self.name)
 	return true
 

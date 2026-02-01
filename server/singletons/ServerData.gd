@@ -18,24 +18,29 @@ var chat_logs = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var data_file = File.new()
-	data_file.open("res://data/GameDataTable.json", File.READ)
-	var gamedata_json = JSON.parse(data_file.get_as_text())
+	var data_file = FileAccess.open("res://data/GameDataTable.json", FileAccess.READ)
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(data_file.get_as_text())
+	var gamedata_json = test_json_conv.get_data()
 	data_file.close()
 	
-	monsterTable = gamedata_json.result["MonsterTable"]
-	itemTable = gamedata_json.result["ItemTable"]
-	equipmentTable = gamedata_json.result["EquipmentTable"]
-	NPCTable = gamedata_json.result["NPCTable"]
-	questTable = gamedata_json.result["QuestTable"]
+	#print(gamedata_json)
+	
+	monsterTable = gamedata_json.MonsterTable
+	itemTable = gamedata_json.ItemTable
+	equipmentTable = gamedata_json.EquipmentTable
+	NPCTable = gamedata_json.NPCTable
+	questTable = gamedata_json.QuestTable
+	
+	print(monsterTable)
 
-onready var ign_id_dict = {}
+@onready var ign_id_dict = {}
 #	var skill_data_file = File.new()
 #	skill_data_file.open("res://Data/SkillData - Sheet1.json", File.READ)
 #	var skill_data_json = JSON.parse(skill_data_file.get_as_text())
 #	skill_data_file.close()s
 
-onready var skill_data = {
+@onready var skill_data = {
 	"0" : {
 		"0": {"name": "Godot Ball", "id": "600000",  "maxLevel": 3, "targetCount": [1,1,1], "description": "Throw a projectile forward", "stat": {"damagePercent": [1.3, 1.5, 1.7]}, "mana": [25, 20, 15], "cooldown": [0, 0, 0], "type": "attack", "attackType": "projectile", "weaponType": null, "damageType": 1, "hitAmount": [2,3,4], "animation": 3},
 		"1": {"name": "Tenacious Heal", "id": "600001",  "maxLevel": 3, "description": "Heals for a small amount", "stat": {"health": [25, 50, 100]}, "mana": [30,20,10], "cooldown": [180, 120, 60], "type": "heal", "healType": "self", "animation": 3},
@@ -47,7 +52,7 @@ onready var skill_data = {
 	"4" : {},
 }
 
-onready var skill_class_dictionary = {
+@onready var skill_class_dictionary = {
 	"600000" : {"class":[0,1,2,3,4], "location": ["0","0"], "job": 0},
 	"600001" : {"class":[0,1,2,3,4], "location": ["0","1"], "job": 0},
 	"600002" : {"class":[0,1,2,3,4], "location": ["0","2"], "job": 0},
@@ -492,7 +497,7 @@ var portal_data = {
 				},
 }
 
-onready var buff_stats = {
+@onready var buff_stats = {
 				"maxHealth": 0,
 				"maxMana": 0,
 				"strength": 0,
@@ -509,11 +514,11 @@ onready var buff_stats = {
 				"damagePercent": 0,
 				"critRate": 0,}
 				
-onready var projectile_dict = {
+@onready var projectile_dict = {
 	"600000": {"object": preload("res://scenes/skillObjects/Projectile.tscn"), "distance": Vector2(44,25),}
 }
 
-onready var equipment_string  = {
+@onready var equipment_string  = {
 	"faceacc": "face",
 	"headgear": "head",
 	"earring": "earring",

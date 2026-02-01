@@ -1,26 +1,26 @@
 extends Control
 
-onready var QuitConfirm = $QuitConfirm
-onready var AnimPlayer = $AnimationPlayer
-onready var OptionMenu = $Options
-onready var MenuMenu = $menu
-onready var ConfirmMenu = $QuitConfirm
+@onready var QuitConfirm = $QuitConfirm
+@onready var AnimPlayer = $AnimationPlayer
+@onready var OptionMenu = $Options
+@onready var MenuMenu = $menu
+@onready var ConfirmMenu = $QuitConfirm
 
-onready var confirmButton
-onready var cancelButton
+@onready var confirmButton
+@onready var cancelButton
 
 
 func _ready():
 	#confirmButton = ConfirmMenu.get_ok()
 	#cancelButton = ConfirmMenu.get_cancel()
-	ConfirmMenu.get_ok().connect("pressed", self, "button_click")
-	ConfirmMenu.get_ok().connect("mouse_entered", self, "button_hover")
-	ConfirmMenu.get_ok().focus_mode = Control.FOCUS_NONE
-	ConfirmMenu.get_cancel().connect("pressed", self, "button_click")
-	ConfirmMenu.get_cancel().connect("mouse_entered", self, "button_hover")
-	ConfirmMenu.get_cancel().focus_mode = Control.FOCUS_NONE
+	ConfirmMenu.get_ok_button().connect("pressed", Callable(self, "button_click"))
+	ConfirmMenu.get_ok_button().connect("mouse_entered", Callable(self, "button_hover"))
+	ConfirmMenu.get_ok_button().focus_mode = Control.FOCUS_NONE
+	ConfirmMenu.get_cancel_button().connect("pressed", Callable(self, "button_click"))
+	ConfirmMenu.get_cancel_button().connect("mouse_entered", Callable(self, "button_hover"))
+	ConfirmMenu.get_cancel_button().focus_mode = Control.FOCUS_NONE
 # warning-ignore:return_value_discarded
-	Signals.connect("toggle_options", self, "toggle_options")
+	Signals.connect("toggle_options", Callable(self, "toggle_options"))
 	#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _input(_event):
@@ -49,7 +49,7 @@ func _on_End_button_down():
 
 	QuitConfirm.popup_centered_ratio(.2)
 # warning-ignore:unused_variable
-	var OkayButton = QuitConfirm.get_ok()
+	var OkayButton = QuitConfirm.get_ok_button()
 	#OkayButton.grab_focus()
 	
 func _on_AcceptDialog_confirmed():

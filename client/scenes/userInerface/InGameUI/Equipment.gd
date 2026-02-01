@@ -1,7 +1,7 @@
 extends Control
-signal move_to_top
+signal move_before
 
-onready var equipment_tab  = {
+@onready var equipment_tab  = {
 	"faceacc": $Background/M/V/TabContainer/Equip/MarginContainer/VBoxContainer/HBoxContainer/Face,
 	"headgear": $Background/M/V/TabContainer/Equip/MarginContainer/VBoxContainer/HBoxContainer/Head,
 	"earring": $Background/M/V/TabContainer/Equip/MarginContainer/VBoxContainer/HBoxContainer/Earring,
@@ -18,7 +18,7 @@ onready var equipment_tab  = {
 	"ring2":$Background/M/V/TabContainer/Equip/MarginContainer/VBoxContainer/HBoxContainer5/Ring2,
 	"ring3":$Background/M/V/TabContainer/Equip/MarginContainer/VBoxContainer/HBoxContainer5/Ring3,
 }
-onready var equipment_string  = {
+@onready var equipment_string  = {
 	"faceacc": "face",
 	"headgear": "head",
 	"earring": "earring",
@@ -36,17 +36,17 @@ onready var equipment_string  = {
 	"ring3": "ring",
 }
 
-onready var equipment_ref
+@onready var equipment_ref
 #onready var equipment_ref = GameData.test_player.equipment
-onready var item_path = "res://assets/itemSprites/equipItems/"
-onready var initialize = 0
+@onready var item_path = "res://assets/itemSprites/equipItems/"
+@onready var initialize = 0
 var drag_position = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 # warning-ignore:return_value_discarded
-	Signals.connect("update_equipment", self, "populate_equipment")
-	Signals.connect("toggle_equipment", self, "toggle_equipment")
+	Signals.connect("update_equipment", Callable(self, "populate_equipment"))
+	Signals.connect("toggle_equipment", Callable(self, "toggle_equipment"))
 	populate_equipment()
 	"""
 	update to own function instead of _Ready so it can be called by
@@ -91,12 +91,12 @@ func _on_Header_gui_input(event):
 		# left mouse button
 		if event.pressed && event.get_button_index() == 1:
 			print("left mouse button")
-			drag_position = get_global_mouse_position() - rect_global_position
-			emit_signal('move_to_top', self)
+			drag_position = get_global_mouse_position() - global_position
+			emit_signal('move_before', self)
 		else:
 			drag_position = null
 	if event is InputEventMouseMotion and drag_position:
-		rect_global_position = get_global_mouse_position() - drag_position
+		global_position = get_global_mouse_position() - drag_position
 			
 
 func _on_TabContainer_tab_selected(_tab):

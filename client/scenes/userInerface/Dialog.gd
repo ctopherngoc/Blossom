@@ -2,40 +2,40 @@ extends Control
 
 const sprite_location = "res://assets/npcSprites/%s/%s.png"
 
-onready var quest_label = preload('res://scenes/userInerface/DialogQuestText.tscn')
-onready var npc_sprite = $Background/MarginContainer/V/HBoxContainer/NPC_Box/Sprite
-onready var npc_name = $Background/MarginContainer/V/HBoxContainer/NPC_Box/Sprite/Label
-onready var dialog = $Background/MarginContainer/V/HBoxContainer/VBoxContainer2/VBoxContainer/DialogContainer/MarginContainer/VBoxContainer/RichTextLabel
-onready var reply_v_box = $Background/MarginContainer/V/HBoxContainer/VBoxContainer2/VBoxContainer/DialogContainer/MarginContainer/VBoxContainer/QuestVBox
-onready var npc_id
-onready var npc_data
-onready var drag_position
+@onready var quest_label = preload('res://scenes/userInerface/DialogQuestText.tscn')
+@onready var npc_sprite = $Background/MarginContainer/V/HBoxContainer/NPC_Box/Sprite2D
+@onready var npc_name = $Background/MarginContainer/V/HBoxContainer/NPC_Box/Sprite2D/Label
+@onready var dialog = $Background/MarginContainer/V/HBoxContainer/VBoxContainer2/VBoxContainer/DialogContainer/MarginContainer/VBoxContainer/RichTextLabel
+@onready var reply_v_box = $Background/MarginContainer/V/HBoxContainer/VBoxContainer2/VBoxContainer/DialogContainer/MarginContainer/VBoxContainer/QuestVBox
+@onready var npc_id
+@onready var npc_data
+@onready var drag_position
 
 #BUTTONS
-onready var back_button = $Background/MarginContainer/V/HBoxContainer/VBoxContainer2/VBoxContainer/DialogContainer/MarginContainer/VBoxContainer/ButtonHbox/back
-onready var next_button = $Background/MarginContainer/V/HBoxContainer/VBoxContainer2/VBoxContainer/DialogContainer/MarginContainer/VBoxContainer/ButtonHbox/next
-onready var exit_button = $Background/MarginContainer/V/HBoxContainer/VBoxContainer2/ButtonContainer/HBoxContainer/exit
-onready var accept_button = $Background/MarginContainer/V/HBoxContainer/VBoxContainer2/ButtonContainer/HBoxContainer/accept
-onready var decline_button = $Background/MarginContainer/V/HBoxContainer/VBoxContainer2/ButtonContainer/HBoxContainer/decline
+@onready var back_button = $Background/MarginContainer/V/HBoxContainer/VBoxContainer2/VBoxContainer/DialogContainer/MarginContainer/VBoxContainer/ButtonHbox/back
+@onready var next_button = $Background/MarginContainer/V/HBoxContainer/VBoxContainer2/VBoxContainer/DialogContainer/MarginContainer/VBoxContainer/ButtonHbox/next
+@onready var exit_button = $Background/MarginContainer/V/HBoxContainer/VBoxContainer2/ButtonContainer/HBoxContainer/exit
+@onready var accept_button = $Background/MarginContainer/V/HBoxContainer/VBoxContainer2/ButtonContainer/HBoxContainer/accept
+@onready var decline_button = $Background/MarginContainer/V/HBoxContainer/VBoxContainer2/ButtonContainer/HBoxContainer/decline
 
-onready var chatDialog
-onready var chatIndex = 0
+@onready var chatDialog
+@onready var chatIndex = 0
 
 var questID
 var quest_state = 0
-onready var questDialog = []
-onready var questIndex = 0
+@onready var questDialog = []
+@onready var questIndex = 0
 
 func _ready():
-	Signals.connect("toggle_dialog", self, "toggle_dialog")
-	Signals.connect("load_quest_dialog", self, "load_quest_dialog")
-	Signals.connect("next_quest_dialog", self, "next_quest_dialog")
-	Signals.connect("prev_quest_dialog", self, "prev_quest_dialog")
-	Signals.connect("accept_quest_dialog", self, "accept_quest_dialog")
-	Signals.connect("accept_quest", self, "accept_quest")
-	Signals.connect("complete_quest", self, "complete_quest")
-	Signals.connect("replace_quest_item", self, "replace_quest_item")
-	Signals.connect("incomplete_quest", self, "incomplete_quest")
+	Signals.connect("toggle_dialog", Callable(self, "toggle_dialog"))
+	Signals.connect("load_quest_dialog", Callable(self, "load_quest_dialog"))
+	Signals.connect("next_quest_dialog", Callable(self, "next_quest_dialog"))
+	Signals.connect("prev_quest_dialog", Callable(self, "prev_quest_dialog"))
+	Signals.connect("accept_quest_dialog", Callable(self, "accept_quest_dialog"))
+	Signals.connect("accept_quest", Callable(self, "accept_quest"))
+	Signals.connect("complete_quest", Callable(self, "complete_quest"))
+	Signals.connect("replace_quest_item", Callable(self, "replace_quest_item"))
+	Signals.connect("incomplete_quest", Callable(self, "incomplete_quest"))
 
 func _on_exit_pressed():
 	print("queuefree dialog box")
@@ -76,14 +76,14 @@ func fill_dialog_box() -> void:
 						if not Global.quest_data[int(GameData.questTable[str(index)].preReq)][0] == 9:
 							index += 1
 							continue
-					var new_quest = quest_label.instance()
+					var new_quest = quest_label.instantiate()
 					new_quest.quest_id = index
 					new_quest.text = str(GameData.questTable[str(index)].title + " (start)")
 					reply_v_box.add_child(new_quest)
 					index += 1
 						
 				elif quest[0] > -1 and str(GameData.questTable[str(index)].npcEnd) == npc_id:
-					var new_quest = quest_label.instance()
+					var new_quest = quest_label.instantiate()
 					new_quest.quest_id = index
 					new_quest.text = str(GameData.questTable[str(index)].title + " (complete)")
 					reply_v_box.add_child(new_quest)
@@ -220,16 +220,16 @@ func _on_Control_gui_input(event):
 		# left mouse button
 		if event.pressed && event.get_button_index() == 1:
 			#print("left mouse button")
-			drag_position = get_global_mouse_position() - rect_global_position
-			emit_signal('move_to_top', self)
+			drag_position = get_global_mouse_position() - global_position
+			emit_signal('move_before', self)
 		else:
 			drag_position = null
 	if event is InputEventMouseMotion and drag_position:
-		rect_global_position = get_global_mouse_position() - drag_position
+		global_position = get_global_mouse_position() - drag_position
 
 func _unhandled_input(event):
 	if event is InputEventKey:
-		if event.pressed and event.scancode == KEY_ESCAPE:
+		if event.pressed and event.keycode == KEY_ESCAPE:
 			_on_exit_pressed()
 
 func quest_error_inventory():

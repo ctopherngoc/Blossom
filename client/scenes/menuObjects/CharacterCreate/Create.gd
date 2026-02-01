@@ -1,15 +1,15 @@
 extends Node2D
 
-onready var verify_button = $Create/Verify
-onready var create_button = $Create/Create
-onready var username_field = $Create/usernameField
-onready var dictionary = "ABCDEFGHIJKLMOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
-onready var character_count
+@onready var verify_button = $Create/Verify
+@onready var create_button = $Create/Create
+@onready var username_field = $Create/usernameField
+@onready var dictionary = "ABCDEFGHIJKLMOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
+@onready var character_count
 var display_name
 var new_username
 var username_check
 
-onready var dudu = null
+@onready var dudu = null
 func _ready():
 	pass
 
@@ -43,7 +43,7 @@ func _on_Verify_pressed():
 	
 func created_character():
 	print("successfully created character")
-	SceneHandler.change_scene("characterSelect")
+	SceneHandler.change_scene_to_file("characterSelect")
 
 func string_validation(username):
 	if username.length() < 6:
@@ -63,4 +63,4 @@ func string_validation(username):
 	return true
 
 func _on_Button_pressed():
-	SceneHandler.change_scene("characterSelect")
+	SceneHandler.change_scene_to_file("characterSelect")

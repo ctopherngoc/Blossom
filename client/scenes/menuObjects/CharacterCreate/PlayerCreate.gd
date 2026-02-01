@@ -1,13 +1,13 @@
 extends Node2D
 
-onready var body = $CompositeSprite/Body
-onready var head = $CompositeSprite/Head
-onready var hair = $CompositeSprite/Hair
-onready var eye = $CompositeSprite/Eye
-onready var brow = $CompositeSprite/Brow
-onready var ear = $CompositeSprite/Ear
-onready var mouth = $CompositeSprite/Mouth
-onready var outfit = $CompositeSprite/Outfit
+@onready var body = $CompositeSprite/Body
+@onready var head = $CompositeSprite/Head
+@onready var hair = $CompositeSprite/Hair
+@onready var eye = $CompositeSprite/Eye
+@onready var brow = $CompositeSprite/Brow
+@onready var ear = $CompositeSprite/Ear
+@onready var mouth = $CompositeSprite/Mouth
+@onready var outfit = $CompositeSprite/Outfit
 
 
 const composite_sprites = preload("res://scenes/menuObjects/CharacterCreate/CompositeSprite.gd")

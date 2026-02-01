@@ -1,20 +1,22 @@
 extends Node
 
-onready var PROJECT_ID: String
-onready var DATABASE_URL: String
-onready var LOGIN_URL: String
-onready var REGISTER_URL: String
+@onready var PROJECT_ID: String
+@onready var DATABASE_URL: String
+@onready var LOGIN_URL: String
+@onready var REGISTER_URL: String
 
 var auth_token: String = ""
-onready var username: String
-onready var password: String
-onready var account_id_list = []
+@onready var username: String
+@onready var password: String
+@onready var account_id_list = []
 #onready var fb_http
 
 func _ready():
 	var data_file = File.new()
 	data_file.open("res://data/server.json", File.READ)
-	var server_json = JSON.parse(data_file.get_as_text())
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(data_file.get_as_text())
+	var server_json = test_json_conv.get_data()
 	
 	PROJECT_ID = server_json.result["PROJECT_ID"]
 	REGISTER_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=%s" % server_json.result["API_KEY"]
@@ -26,12 +28,14 @@ func _ready():
 
 #func _get_token_id_from_result(result: Array) -> String:
 func _get_user_info(result: Array) -> Dictionary:
-	var result_body := JSON.parse(result[3].get_string_from_ascii()).result as Dictionary
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(result[3].get_string_from_ascii()).result as Dictionary
+	var result_body := test_json_conv.get_data()
 	#return result_body.idToken
 	return {
 		"token" : result_body.idToken,
 		"id" : result_body.localId,
-		"timestamp" : OS.get_unix_time(),
+		"timestamp" : Time.get_unix_time_from_system(),
 	}
 		
 func login(email: String, password: String, results: Array):
@@ -46,8 +50,8 @@ func login(email: String, password: String, results: Array):
 	#print("login %s" % body)
 	
 # warning-ignore:return_value_discarded
-	http.request(LOGIN_URL, [], false, HTTPClient.METHOD_POST, to_json(body))
-	var result := yield(http, "request_completed") as Array
+	http.request(LOGIN_URL, [], false, HTTPClient.METHOD_POST, JSON.new().stringify(body))
+	var result := await http.request_completed as Array
 
 	if result[1] == 200:
 		"""
@@ -66,7 +70,7 @@ func login(email: String, password: String, results: Array):
 func auth_get_token():
 	var results = []
 	var firebaseStatus = login(username, password, results)
-	yield(firebaseStatus, "completed")
+	await firebaseStatus.completed
 	if results[0] != 200:
 		print("auth Signin Unsuccessful")
 	else:
@@ -75,8 +79,8 @@ func auth_get_token():
 		_server_get_document("users")
 		
 		
-func _get_request_headers(token_id: String) -> PoolStringArray:
-	return PoolStringArray([
+func _get_request_headers(token_id: String) -> PackedStringArray:
+	return PackedStringArray([
 		"Content-Type: application/json",
 		"Authorization: Bearer %s" % token_id
 	])
@@ -87,8 +91,10 @@ func _server_get_document(path: String)-> void:
 	var url := DATABASE_URL + path
 # warning-ignore:return_value_discarded
 	http.request(url, _get_request_headers(auth_token), false, HTTPClient.METHOD_GET)
-	var result := yield(http, "request_completed") as Array
-	var result_body := JSON.parse(result[3].get_string_from_ascii()).result as Dictionary
+	var result := await http.request_completed as Array
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(result[3].get_string_from_ascii()).result as Dictionary
+	var result_body := test_json_conv.get_data()
 	#print(result_body)
 	var document_list = result_body["documents"]
 	for document in document_list:
@@ -101,11 +107,11 @@ func update_document(path: String) -> void:
 	var http = HTTPRequest.new()
 	self.add_child(http)
 	var character_list = {"fields": {'characters':{'arrayValue':{'values': []}}}}
-	var body := to_json(character_list)
+	var body := JSON.new().stringify(character_list)
 	var url := DATABASE_URL + path
 	#print(body)
 	# warning-ignore:return_value_discarded
 	http.request(url, _get_request_headers(auth_token), false, HTTPClient.METHOD_PATCH, body)
-	yield(http, "request_completed")
+	await http.request_completed
 	http.queue_free()
 

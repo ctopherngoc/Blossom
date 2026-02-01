@@ -1,16 +1,16 @@
 extends Control
 
 var drag_position
-signal move_to_top
+signal move_before
 
-onready var strength = get_node("NinePatchRect/HBoxContainer/VBoxContainer/Strength/Value")
-onready var luck = get_node("NinePatchRect/HBoxContainer/VBoxContainer/Luck/Value")
-onready var dexterity = get_node("NinePatchRect/HBoxContainer/VBoxContainer/Dexterity/Value")
-onready var wisdom = get_node("NinePatchRect/HBoxContainer/VBoxContainer/Wisdom/Value")
-onready var stat_points = get_node("NinePatchRect/HBoxContainer/VBoxContainer/StatPoints/ColorRect/Value")
+@onready var strength = get_node("NinePatchRect/HBoxContainer/VBoxContainer/Strength/Value")
+@onready var luck = get_node("NinePatchRect/HBoxContainer/VBoxContainer/Luck/Value")
+@onready var dexterity = get_node("NinePatchRect/HBoxContainer/VBoxContainer/Dexterity/Value")
+@onready var wisdom = get_node("NinePatchRect/HBoxContainer/VBoxContainer/Wisdom/Value")
+@onready var stat_points = get_node("NinePatchRect/HBoxContainer/VBoxContainer/StatPoints/ColorRect/Value")
 
 
-onready var sp_buttons = [$NinePatchRect/HBoxContainer/VBoxContainer/Strength/Button, 
+@onready var sp_buttons = [$NinePatchRect/HBoxContainer/VBoxContainer/Strength/Button, 
 						$NinePatchRect/HBoxContainer/VBoxContainer/Wisdom/Button2,
 						$NinePatchRect/HBoxContainer/VBoxContainer/Dexterity/Button3,
 						$NinePatchRect/HBoxContainer/VBoxContainer/Luck/Button4
@@ -24,9 +24,9 @@ func _ready() -> void:
 #	Server.fetch_player_stats()
 	load_player_stats(Global.player.stats)
 	# warning-ignore:return_value_discarded
-	Signals.connect("update_stats", self, "update_display")
+	Signals.connect("update_stats", Callable(self, "update_display"))
 # warning-ignore:return_value_discarded
-	Signals.connect("toggle_stats", self, "toggle_stats")
+	Signals.connect("toggle_stats", Callable(self, "toggle_stats"))
 
 func load_player_stats(stats: Dictionary) -> void:
 	strength.set_text(str(stats.base.strength + stats.equipment.strength))
@@ -58,12 +58,12 @@ func _on_PlayerStats_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		# left mouse button
 		if event.pressed && event.get_button_index() == 1:
-			drag_position = get_global_mouse_position() - rect_global_position
-			emit_signal('move_to_top', self)
+			drag_position = get_global_mouse_position() - global_position
+			emit_signal('move_before', self)
 		else:
 			drag_position = null
 	if event is InputEventMouseMotion and drag_position:
-		rect_global_position = get_global_mouse_position() - drag_position
+		global_position = get_global_mouse_position() - drag_position
 
 func _on_Button2_pressed() -> void:
 	AudioControl.play_audio("menuClick")

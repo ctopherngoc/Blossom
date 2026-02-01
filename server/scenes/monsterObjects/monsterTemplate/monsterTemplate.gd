@@ -1,29 +1,29 @@
-extends KinematicBody2D
+extends CharacterBody2D
 var id: String
 var location = null
 var map_id = null
 var state = "idle"
 var stats = {}
 var damage_taken: Array = []
-onready var parent
-onready var miss_counter = 0
+@onready var parent
+@onready var miss_counter = 0
 
 var rng = RandomNumberGenerator.new()
-var velocity = Vector2.ZERO
 var direction = Vector2.RIGHT
 var gravity = 1600
 var speed_factor = 0.5
 var move_state
 var attackers = {}
-onready var target_node
-onready var target_position
-onready var sprite_scale = Vector2(0.7, 0.4)
-export onready var knockback_power = 1000
-onready var knockback_position
+@onready var target_node
+@onready var target_position
+@onready var sprite_scale = Vector2(0.7, 0.4)
+@export var knockback_power = 1000
+@onready var knockback_position
 
 func _ready():
 	stats = ServerData.monsterTable[self.id].duplicate(true)
 	self.scale = sprite_scale
+	velocity = Vector2.ZERO
 	
 func _process(delta):
 	if self.scale != sprite_scale:
@@ -87,7 +87,10 @@ func _process(delta):
 				else:
 					velocity.x = 0
 		velocity.y += gravity * delta
-		velocity = move_and_slide(velocity, Vector2.UP)
+		set_velocity(velocity)
+		set_up_direction(Vector2.UP)
+		move_and_slide()
+		velocity = velocity
 	else:
 		# if hit apply knockback
 		position = position.move_toward(knockback_position, knockback_power * delta * speed_factor)
@@ -95,7 +98,7 @@ func _process(delta):
 			self.state = "idle"
 		
 func _on_Timer_timeout():
-	var randi_move = floor(rand_range(0,3))
+	var randi_move = floor(randf_range(0,3))
 	# next is idle
 	if not move_state in [0,3] and randi_move in [0,3]:
 		move_state = randi_move
@@ -119,7 +122,7 @@ func update_state() -> void:
 	damage_taken.clear()
 	
 func get_target() -> String:
-	if attackers.empty():
+	if attackers.is_empty():
 		return "none"
 	else:
 		var players = attackers.keys()

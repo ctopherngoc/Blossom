@@ -5,24 +5,24 @@
 [ext_resource path="res://scenes/playerObjects/OtherCompositeSprite.gd" type="Script" id=3]
 [ext_resource path="res://scenes/userInerface/PlayerChatBox.tscn" type="PackedScene" id=4]
 
-[sub_resource type="DynamicFontData" id=3]
+[sub_resource type="FontFile" id=3]
 font_path = "res://assets/fonts/xolonium/xolonium-fonts-4.1/ttf/Xolonium-Regular.ttf"
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="FontFile" id=2]
 font_data = SubResource( 3 )
 
-[node name="PlayerTemplate" type="Sprite" groups=["otherPlayer"]]
+[node name="PlayerTemplate" type="Sprite2D" groups=["otherPlayer"]]
 position = Vector2( -7, -29 )
 script = ExtResource( 2 )
 
 [node name="Label" type="Label" parent="."]
-margin_left = -41.0
-margin_top = 56.0
-margin_right = 47.0
-margin_bottom = 73.0
-custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
-custom_constants/shadow_as_outline = 2
-custom_fonts/font = SubResource( 2 )
+offset_left = -41.0
+offset_top = 56.0
+offset_right = 47.0
+offset_bottom = 73.0
+theme_override_colors/font_shadow_color = Color( 0, 0, 0, 1 )
+theme_override_constants/shadow_outline_size = 2
+theme_override_fonts/font = SubResource( 2 )
 text = "Other Player"
 align = 1
 
@@ -115,9 +115,9 @@ frame = 16
 
 [node name="ChatBox" parent="." instance=ExtResource( 4 )]
 visible = false
-margin_left = -57.0
-margin_top = -84.0
-margin_right = 59.0
-margin_bottom = -64.0
+offset_left = -57.0
+offset_top = -84.0
+offset_right = 59.0
+offset_bottom = -64.0
 
 [editable path="CompositeSprite"]

@@ -2,30 +2,30 @@ extends Control
 
 const sprite_location = "res://assets/npcSprites/%s/%s.png"
 
-onready var avaliable_quests = $QuestLog/M/V/TabContainer/Avaliable/ScrollContainer/MarginContainer/VBoxContainer
-onready var in_progress_quests = $QuestLog/M/V/TabContainer/InProgress/ScrollContainer/MarginContainer/VBoxContainer
-onready var completed_quests = $QuestLog/M/V/TabContainer/Completed/ScrollContainer/MarginContainer/VBoxContainer
+@onready var avaliable_quests = $QuestLog/M/V/TabContainer/Avaliable/ScrollContainer/MarginContainer/VBoxContainer
+@onready var in_progress_quests = $QuestLog/M/V/TabContainer/InProgress/ScrollContainer/MarginContainer/VBoxContainer
+@onready var completed_quests = $QuestLog/M/V/TabContainer/Completed/ScrollContainer/MarginContainer/VBoxContainer
 
-onready var quest_info = $QuestInfo
-onready var quest_info_name = $QuestInfo/M/V/Header/ColorRect/VBoxContainer/QuestName
-onready var quest_info_level = $QuestInfo/M/V/Header/ColorRect/VBoxContainer/LevelReq
-onready var quest_info_descrption = $QuestInfo/M/V/ColorRect/MarginContainer/VBoxContainer/Description
-onready var quest_info_npc_texture = $QuestInfo/M/V/Header/ColorRect/Sprite
-onready var quest_info_objective = $QuestInfo/M/V/ColorRect/MarginContainer/VBoxContainer/Objective
+@onready var quest_info = $QuestInfo
+@onready var quest_info_name = $QuestInfo/M/V/Header/ColorRect/VBoxContainer/QuestName
+@onready var quest_info_level = $QuestInfo/M/V/Header/ColorRect/VBoxContainer/LevelReq
+@onready var quest_info_descrption = $QuestInfo/M/V/ColorRect/MarginContainer/VBoxContainer/Description
+@onready var quest_info_npc_texture = $QuestInfo/M/V/Header/ColorRect/Sprite2D
+@onready var quest_info_objective = $QuestInfo/M/V/ColorRect/MarginContainer/VBoxContainer/Objective
 
-onready var quest_entry = preload("res://scenes/userInerface/InGameUI/QuestEntry.tscn")
-onready var drag_position
+@onready var quest_entry = preload("res://scenes/userInerface/InGameUI/QuestEntry.tscn")
+@onready var drag_position
 
-onready var quest_info_id
+@onready var quest_info_id
 
 
 func _ready():
 # warning-ignore:return_value_discarded
-	Signals.connect("update_quest_log", self, "populate_quest_log")
+	Signals.connect("update_quest_log", Callable(self, "populate_quest_log"))
 # warning-ignore:return_value_discarded
-	Signals.connect("toggle_quest_details", self, "toggle_quest_details")
+	Signals.connect("toggle_quest_details", Callable(self, "toggle_quest_details"))
 # warning-ignore:return_value_discarded
-	Signals.connect("toggle_questLog", self, "toggle_questLog")
+	Signals.connect("toggle_questLog", Callable(self, "toggle_questLog"))
 	populate_quest_log()
 
 func _on_Header_gui_input(event):
@@ -33,12 +33,12 @@ func _on_Header_gui_input(event):
 		# left mouse button
 		if event.pressed && event.get_button_index() == 1:
 			#print("left mouse button")
-			drag_position = get_global_mouse_position() - rect_global_position
-			emit_signal('move_to_top', self)
+			drag_position = get_global_mouse_position() - global_position
+			emit_signal('move_before', self)
 		else:
 			drag_position = null
 	if event is InputEventMouseMotion and drag_position:
-		rect_global_position = get_global_mouse_position() - drag_position
+		global_position = get_global_mouse_position() - drag_position
 
 
 func _on_TabContainer_tab_selected(_tab):
@@ -60,7 +60,7 @@ func populate_quest_log():
 				index +=1
 				continue
 		
-		var new_entry = quest_entry.instance()
+		var new_entry = quest_entry.instantiate()
 		new_entry.text = GameData.questTable[str(index)].title
 		new_entry.quest_id = index
 		new_entry.quest_data = GameData.questTable[str(index)]

@@ -1,11 +1,11 @@
 extends Control
 
-onready var icon = $Icon
-onready var background = $TextureRect
-onready var empty_bg = "res://assets/UI/background/inventorySlots2.png"
-onready var used_bg = "res://assets/UI/backgroundSource/Green.png"
-onready var equip_info = preload("res://scenes/userInerface/ItemInfo/EquipInfo.tscn")
-onready var label = $Label
+@onready var icon = $Icon
+@onready var background = $TextureRect
+@onready var empty_bg = "res://assets/UI/background/inventorySlots2.png"
+@onready var used_bg = "res://assets/UI/backgroundSource/Green.png"
+@onready var equip_info = preload("res://scenes/userInerface/ItemInfo/EquipInfo.tscn")
+@onready var label = $Label
 var dragging = false
 var slot
 #var type
@@ -30,7 +30,7 @@ var slot
 
 
 func _ready():
-	Signals.connect("toggle_equipment", self, "item_info_free")
+	Signals.connect("toggle_equipment", Callable(self, "item_info_free"))
 
 var item_data = {
 	"id" : null,
@@ -41,7 +41,7 @@ func _notification(what):
 	if what == 22:
 		item_info_free()
 
-func get_drag_data(_pos):
+func _get_drag_data(_pos):
 	print("item_data")
 	print(item_data)
 	# if slot is not null
@@ -58,15 +58,15 @@ func get_drag_data(_pos):
 		var drag_texture = TextureRect.new()
 		drag_texture.expand = true
 		drag_texture.texture = icon.texture
-		drag_texture.rect_size = Vector2(60, 60)
+		drag_texture.size = Vector2(60, 60)
 		
 		var control = Control.new()
 		control.add_child(drag_texture)
-		drag_texture.rect_position = -0.5 * drag_texture.rect_size
+		drag_texture.position = -0.5 * drag_texture.size
 		set_drag_preview(control)
 		
 		return data 
-func can_drop_data(_pos, data):
+func _can_drop_data(_pos, data):
 	## INVENTORY TYPE CHECK##
 	if not data.tab == "equipment":
 		print("not equipment tab")
@@ -139,7 +139,7 @@ func can_drop_data(_pos, data):
 		print("incorrect slot")
 		return false
 
-func drop_data(_pos, data):
+func _drop_data(_pos, data):
 	var drag_icon = data.item_data
 	var drop_icon = item_data
 	
@@ -183,14 +183,14 @@ update server char inventory data -> client remote func to update character data
 """
 func _gui_input(event):
 	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 
 			if item_data.id:
 				AudioControl.play_audio("menuClick")
 
 func _on_0_gui_input(event):
 	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT and event.pressed and event.is_doubleclick():
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed and event.is_double_click():
 			if item_data.id == null:
 				print("empty")
 			else:
@@ -200,7 +200,7 @@ func _on_0_gui_input(event):
 					Server.remove_equipment_request(self.slot, empty_slot)
 				else:
 					print("equipment %s been clicked D:" % slot)
-		elif event.button_index == BUTTON_LEFT and event.pressed:
+		elif event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			print("equipment %s been clicked D:" % slot)
 
 func _on_0_mouse_entered():
@@ -208,14 +208,14 @@ func _on_0_mouse_entered():
 		print(slot)
 	else:
 		print("populate equipment window")
-		var equip_tip = equip_info.instance()
+		var equip_tip = equip_info.instantiate()
 		equip_tip.origin = "Equipment"
 		equip_tip.tab = slot
 		var inventory_origin = get_node("/root/GameWorld/UI/Control/Equipment")
-		equip_tip.rect_position.x = inventory_origin.rect_global_position.x + (inventory_origin.rect_size.x * inventory_origin.rect_scale.x)
-		equip_tip.rect_position.y = inventory_origin.rect_global_position.y
+		equip_tip.position.x = inventory_origin.global_position.x + (inventory_origin.size.x * inventory_origin.scale.x)
+		equip_tip.position.y = inventory_origin.global_position.y
 		add_child(equip_tip)
-		yield(get_tree().create_timer(0.35), "timeout")
+		await get_tree().create_timer(0.35).timeout
 		if has_node("ItemInfo") and get_node("ItemInfo").valid:
 			#print("Show equipinfo")
 			get_node("ItemInfo").show()

@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://scenes/userInerface/damageNumberThemes/jelly_damage.tres" type="DynamicFont" id=1]
+[ext_resource path="res://scenes/userInerface/damageNumberThemes/jelly_damage.tres" type="FontFile" id=1]
 [ext_resource path="res://scenes/userInerface/FloatingText.gd" type="Script" id=2]
 
-[node name="FloatingText" type="Position2D"]
+[node name="FloatingText" type="Marker2D"]
 scale = Vector2( 0.7, 0.7 )
 script = ExtResource( 2 )
 
@@ -12,13 +12,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -15.0
-margin_top = -125.0
-margin_right = 305.0
-margin_bottom = -24.0
-custom_colors/font_color = Color( 1, 0.701961, 0, 1 )
-custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
-custom_fonts/font = ExtResource( 1 )
+offset_left = -15.0
+offset_top = -125.0
+offset_right = 305.0
+offset_bottom = -24.0
+theme_override_colors/font_color = Color( 1, 0.701961, 0, 1 )
+theme_override_colors/font_shadow_color = Color( 0, 0, 0, 1 )
+theme_override_fonts/font = ExtResource( 1 )
 text = "200000000000"
 valign = 1
 

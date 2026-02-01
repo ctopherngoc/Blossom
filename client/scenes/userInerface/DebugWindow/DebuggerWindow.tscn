@@ -4,8 +4,8 @@
 
 [node name="DebuggerWindow" type="Control"]
 visible = false
-margin_right = 406.0
-margin_bottom = 187.0
+offset_right = 406.0
+offset_bottom = 187.0
 mouse_filter = 2
 script = ExtResource( 1 )
 

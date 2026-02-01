@@ -1,9 +1,9 @@
 extends CanvasLayer
 
-onready var QuitConfirm = $Control/InGameMenu/QuitConfirm
-onready var AnimPlayer = $Control/InGameMenu/AnimationPlayer
-onready var OptionMenu = $Control/InGameMenu/Options
-onready var MenuMenu = $Control/InGameMenu
+@onready var QuitConfirm = $Control/InGameMenu/QuitConfirm
+@onready var AnimPlayer = $Control/InGameMenu/AnimationPlayer
+@onready var OptionMenu = $Control/InGameMenu/Options
+@onready var MenuMenu = $Control/InGameMenu
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -23,7 +23,7 @@ func _on_End_button_down() -> void:
 	#SoundManager.PlayFX(SoundManager.ErrorSound)
 
 	QuitConfirm.popup_centered_ratio(.2)
-	var OkayButton = QuitConfirm.get_ok()
+	var OkayButton = QuitConfirm.get_ok_button()
 	OkayButton.grab_focus()
 	
 func _on_AcceptDialog_confirmed():

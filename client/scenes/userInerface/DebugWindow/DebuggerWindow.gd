@@ -1,6 +1,6 @@
 extends Control
 
-onready var label = $Label
+@onready var label = $Label
 func _ready():
 	pass
 

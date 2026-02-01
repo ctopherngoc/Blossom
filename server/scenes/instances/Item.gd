@@ -1,10 +1,9 @@
-extends KinematicBody2D
+extends CharacterBody2D
 var id
 var stats
 var player_owner = null
 var amount
 var gravity = 800
-var velocity = Vector2(0, 0)
 var looted = false
 var map
 var drop_id
@@ -12,11 +11,14 @@ var stackable = 0
 var just_dropped = 1
 
 func _ready():
-	pass
+	velocity = Vector2.ZERO
 
 func _process(delta: float) -> void:
 	velocity.y += gravity * delta
-	velocity = move_and_slide(velocity, Vector2.UP)
+	set_velocity(velocity)
+	set_up_direction(Vector2.UP)
+	move_and_slide()
+	velocity = velocity
 
 # player owner looting timer
 func _on_Timer_timeout() -> void:

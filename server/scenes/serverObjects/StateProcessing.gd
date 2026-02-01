@@ -7,7 +7,7 @@ func _physics_process(_delta: float) -> void:
 	if sync_clock_counter == 3:
 		sync_clock_counter = 0
 
-		if not ServerData.player_state_collection.empty():
+		if not ServerData.player_state_collection.is_empty():
 			var map_list = Global.maps.get_children()
 			
 			"""
@@ -42,8 +42,9 @@ func _physics_process(_delta: float) -> void:
 							map_state["P"][int(player_node.name)] = ServerData.player_state_collection[int(player_node.name)].duplicate(true)
 							map_state["P"][int(player_node.name)].erase("T")
 				var player_list = map_state["P"].keys()
-				map_state["T"] = OS.get_system_time_msecs()
-				get_parent().send_world_state(player_list, var2bytes(map_state))
+				#map_state["T"] = OS.get_system_time_msecs()
+				map_state["T"] = Time.get_ticks_msec()
+				get_parent().send_world_state(player_list, var_to_bytes(map_state))
 #
 #			#verification
 #

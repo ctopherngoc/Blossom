@@ -1,13 +1,13 @@
 extends Label
 
-onready var quest_id
+@onready var quest_id
 
 func _ready():
 	pass
 
 func _on_Label_gui_input(event):
 	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			AudioControl.play_audio("menuClick")
 			Signals.emit_signal("load_quest_dialog", quest_id)
 	

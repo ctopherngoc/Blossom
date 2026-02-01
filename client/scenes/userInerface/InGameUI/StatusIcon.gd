@@ -1,6 +1,6 @@
-extends Sprite
+extends Sprite2D
 
-onready var sprite_dict = {
+@onready var sprite_dict = {
 	"heal": 0,
 	"confuse": 1,
 	"sleep": 2,

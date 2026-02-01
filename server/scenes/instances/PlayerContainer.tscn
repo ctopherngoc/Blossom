@@ -28,8 +28,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0.6, 0.96 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PackedFloat32Array( 0.6, 0.96 ),
+"transitions": PackedFloat32Array( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
 }
@@ -40,8 +40,8 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0.78 ),
-"transitions": PoolRealArray( 1 ),
+"times": PackedFloat32Array( 0.78 ),
+"transitions": PackedFloat32Array( 1 ),
 "values": [ {
 "args": [  ],
 "method": "overlapping_bodies"
@@ -59,8 +59,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0.78 ),
-"transitions": PoolRealArray( 1 ),
+"times": PackedFloat32Array( 0.78 ),
+"transitions": PackedFloat32Array( 1 ),
 "values": [ {
 "args": [  ],
 "method": "overlapping_bodies"
@@ -73,8 +73,8 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0.6, 0.96 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PackedFloat32Array( 0.6, 0.96 ),
+"transitions": PackedFloat32Array( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
 }
@@ -88,8 +88,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
+"times": PackedFloat32Array( 0 ),
+"transitions": PackedFloat32Array( 1 ),
 "update": 1,
 "values": [ true ]
 }
@@ -100,8 +100,8 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
+"times": PackedFloat32Array( 0 ),
+"transitions": PackedFloat32Array( 1 ),
 "update": 0,
 "values": [ true ]
 }
@@ -112,8 +112,8 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
+"times": PackedFloat32Array( 0 ),
+"transitions": PackedFloat32Array( 1 ),
 "update": 1,
 "values": [ true ]
 }
@@ -124,8 +124,8 @@ tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = true
 tracks/3/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
+"times": PackedFloat32Array( 0 ),
+"transitions": PackedFloat32Array( 1 ),
 "update": 0,
 "values": [ true ]
 }
@@ -141,8 +141,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray(  ),
-"transitions": PoolRealArray(  ),
+"times": PackedFloat32Array(  ),
+"transitions": PackedFloat32Array(  ),
 "update": 1,
 "values": [  ]
 }
@@ -158,8 +158,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0.78 ),
-"transitions": PoolRealArray( 1 ),
+"times": PackedFloat32Array( 0.78 ),
+"transitions": PackedFloat32Array( 1 ),
 "values": [ {
 "args": [  ],
 "method": "overlapping_bodies"
@@ -172,13 +172,13 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0.6, 0.96 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PackedFloat32Array( 0.6, 0.96 ),
+"transitions": PackedFloat32Array( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
 }
 
-[node name="PlayerContainer" type="KinematicBody2D" groups=["player"]]
+[node name="PlayerContainer" type="CharacterBody2D" groups=["player"]]
 collision_layer = 3776
 collision_mask = 3
 script = ExtResource( 1 )
@@ -206,10 +206,10 @@ position = Vector2( -8, 3 )
 shape = SubResource( 21 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
-margin_left = -24.0
-margin_top = -54.0
-margin_right = 27.0
-margin_bottom = 54.0
+offset_left = -24.0
+offset_top = -54.0
+offset_right = 27.0
+offset_bottom = 54.0
 color = Color( 1, 0, 0, 1 )
 
 [node name="hurt_box" type="Area2D" parent="."]

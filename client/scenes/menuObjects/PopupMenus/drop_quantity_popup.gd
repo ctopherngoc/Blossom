@@ -1,7 +1,7 @@
 extends Panel
 
-onready var drop_button = $ColorRect/VBoxContainer/HBoxContainer2/Button
-onready var quantity_error = $IncorrectQuantity
+@onready var drop_button = $ColorRect/VBoxContainer/HBoxContainer2/Button
+@onready var quantity_error = $IncorrectQuantity
 """
 data["origin_node"] = self
 data["origin_texture"] = icon.texture
@@ -9,8 +9,8 @@ data["item_data"] = item_data
 data["from_slot"] = slot_index
 data["tab"] = tab
 """
-onready var data
-onready var button = $ColorRect/VBoxContainer/HBoxContainer2/Button
+@onready var data
+@onready var button = $ColorRect/VBoxContainer/HBoxContainer2/Button
 func _ready():
 	$IncorrectQuantity.window_title = ""
 	$IncorrectQuantity.get_child(1).align = HALIGN_CENTER
@@ -19,7 +19,7 @@ func _ready():
 func _on_Button_pressed():
 	button.disabled = true
 	var text = $ColorRect/VBoxContainer/HBoxContainer2/LineEdit.text
-	if text.is_valid_integer():
+	if text.is_valid_int():
 		if int(text) <= data.item_data.q:
 			Signals.emit_signal("drop_quantity", data.from_slot, data.tab, int(text))
 			self.queue_free()

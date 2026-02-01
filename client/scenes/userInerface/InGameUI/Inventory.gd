@@ -1,25 +1,25 @@
 extends Control
 
 var inventory_slot = preload("res://scenes/userInerface/InGameUI/InventorySlot.tscn")
-signal move_to_top
+signal move_before
 
-onready var use_grid = $Background/M/V/TabContainer/Use/ScrollContainer/GridContainer
-onready var equip_grid = $Background/M/V/TabContainer/Equip/ScrollContainer/GridContainer
-onready var etc_grid = $Background/M/V/TabContainer/ETC/ScrollContainer/GridContainer
-onready var gold_label = $Background/M/V/ColorRect/HBoxContainer/goldLabel
+@onready var use_grid = $Background/M/V/TabContainer/Use/ScrollContainer/GridContainer
+@onready var equip_grid = $Background/M/V/TabContainer/Equip/ScrollContainer/GridContainer
+@onready var etc_grid = $Background/M/V/TabContainer/ETC/ScrollContainer/GridContainer
+@onready var gold_label = $Background/M/V/ColorRect/HBoxContainer/goldLabel
 
 # global.player
-onready var inv_ref = {
+@onready var inv_ref = {
 	"100000": 0,
 	"equipment": [],
 	"use": [],
 	"etc": [],
 }
-onready var stackable_tabs = ["etc", "use"]
-onready var item_path= "res://assets/itemSprites/"
-onready var max_slots = 32
-onready var inventory_tabs
-onready var initialize = 0
+@onready var stackable_tabs = ["etc", "use"]
+@onready var item_path= "res://assets/itemSprites/"
+@onready var max_slots = 32
+@onready var inventory_tabs
+@onready var initialize = 0
 var drag_position = null
 
 var node_list = {
@@ -31,9 +31,9 @@ var node_list = {
 # Called when the node enters the scene tree for the first time.
 func _ready():
 # warning-ignore:return_value_discarded
-	Signals.connect("update_inventory", self, "update_inventory")
+	Signals.connect("update_inventory", Callable(self, "update_inventory"))
 # warning-ignore:return_value_discarded
-	Signals.connect("toggle_inventory", self, "toggle_inventory")
+	Signals.connect("toggle_inventory", Callable(self, "toggle_inventory"))
 	poplulate_inventory()
 	"""
 	update to own function instead of _Ready so it can be called by
@@ -53,7 +53,7 @@ func poplulate_inventory():
 			max_slots = inv_ref[tab].size()
 			# for item in each tab
 			while count < max_slots:
-				var inv_slot_new = inventory_slot.instance()
+				var inv_slot_new = inventory_slot.instantiate()
 				inv_slot_new.tab = tab
 				inv_slot_new.slot_index = count
 				# there is an item in data
@@ -146,12 +146,12 @@ func _on_Header_gui_input(event):
 		# left mouse button
 		if event.pressed && event.get_button_index() == 1:
 			print("left mouse button")
-			drag_position = get_global_mouse_position() - rect_global_position
-			emit_signal('move_to_top', self)
+			drag_position = get_global_mouse_position() - global_position
+			emit_signal('move_before', self)
 		else:
 			drag_position = null
 	if event is InputEventMouseMotion and drag_position:
-		rect_global_position = get_global_mouse_position() - drag_position
+		global_position = get_global_mouse_position() - drag_position
 
 func _on_TabContainer_tab_selected(_tab):
 	AudioControl.play_audio("menuClick")

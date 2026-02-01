@@ -3,7 +3,7 @@
 ######################################################################
 extends Node
 
-var network = NetworkedMultiplayerENet.new()
+var network = ENetMultiplayerPeer.new()
 var gateway_api = MultiplayerAPI.new()
 var port = 2734
 var cert = load("res://resources/Certificate/X509_Certificate.crt")
@@ -19,27 +19,27 @@ func _process(_delta: float) -> void:
 	
 	if get_custom_multiplayer() == null:
 		return
-	if not custom_multiplayer.has_network_peer():
+	if not custom_multiplayer.has_multiplayer_peer():
 		return
 	custom_multiplayer.poll()
 
 func connect_to_server(_username: String, _password: String) -> void:
 	print("connecting to gateway")
-	network = NetworkedMultiplayerENet.new()
+	network = ENetMultiplayerPeer.new()
 	gateway_api = MultiplayerAPI.new()
 	network.set_dtls_enabled(true)
 	network.set_dtls_verify_enabled(false)
 	network.set_dtls_certificate(cert)
-	network.connect("connection_failed", self, "_on_connection_failed")
-	network.connect("connection_succeeded", self, "_on_connection_succeeded")
-	Signals.connect("connection_unsuccessful", self, "connection_unsuccessful")
+	network.connect("connection_failed", Callable(self, "_on_connection_failed"))
+	network.connect("connection_succeeded", Callable(self, "_on_connection_succeeded"))
+	Signals.connect("connection_unsuccessful", Callable(self, "connection_unsuccessful"))
 	
 	username = _username
 	password = _password
 	network.create_client(Global.ip, port)
 	set_custom_multiplayer(gateway_api)
 	custom_multiplayer.set_root_node(self)
-	custom_multiplayer.set_network_peer(network)
+	custom_multiplayer.set_multiplayer_peer(network)
 	# start timer to time out login
 
 func _on_connection_failed() -> void:
@@ -60,7 +60,7 @@ func request_login() -> void:
 	password = ""
 	Global.login_timer.start()
 
-remote func return_login_request(results: Array) -> void:
+@rpc("any_peer") func return_login_request(results: Array) -> void:
 	"""
 	results[0] = code
 	results[1] = {token, id}

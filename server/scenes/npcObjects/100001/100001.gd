@@ -1,4 +1,4 @@
-extends KinematicBody2D
+extends CharacterBody2D
 var id = "100001"
 
 var rng = RandomNumberGenerator.new()
@@ -25,14 +25,17 @@ func _process(delta):
 	else:
 		velocity.x = 0
 		velocity.y += GRAVITY * delta
-	velocity = move_and_slide(velocity, Vector2.UP)
+	set_velocity(velocity)
+	set_up_direction(Vector2.UP)
+	move_and_slide()
+	velocity = velocity
 	if position == location[0]:
 		destination = location[1]
 	elif position == location[1]:
 		destination = location[0]
 
 func _on_Timer_timeout():
-	var randi_move = floor(rand_range(0,3))
+	var randi_move = floor(randf_range(0,3))
 	# next is idle
 	if not move_state in [0,3] and randi_move in [0,3]:
 		move_state = randi_move

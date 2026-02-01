@@ -1,29 +1,29 @@
-extends Sprite
+extends Sprite2D
 """
 on instance requirement:
 	id: skill -> sprite
 	direction: -> player_container/monster direction
 """
-onready var id: String
+@onready var id: String
 # 1 = right -1 = left
-onready var direction: int
+@onready var direction: int
 
 # projectile data
 var max_speed: int = 600
-onready var max_distance: int
+@onready var max_distance: int
 var target
 var target_hit
 
-onready var ready = 1
+@onready var is_ready = 1
 
-onready var hitbox = get_node("Hitbox")
-onready var rangebox = get_node("Range")
-onready var player
-onready var skill_level
-onready var skill_data
+@onready var hitbox = get_node("Hitbox")
+@onready var rangebox = get_node("Range")
+@onready var player
+@onready var skill_level
+@onready var skill_data
 
 
-func _ready():
+func _ready() -> void:
 	get_closest_target()
 	
 func _physics_process(delta: float) -> void:
@@ -31,18 +31,18 @@ func _physics_process(delta: float) -> void:
 		position += (max_speed * direction) * Vector2(1,0) * delta
 		if direction == 1:
 			if abs(self.position.x) > abs(max_distance):
-				ready = -1
+				is_ready = -1
 		else:
 			if self.position.x < max_distance:
-				ready = -1
+				is_ready = -1
 		return
 	else:
 		if direction == 1:
 			if abs(self.position.x) > abs(max_distance):
-				ready = -1
+				is_ready = -1
 		else:
 			if abs(self.position.x) < abs(max_distance):
-				ready = -1
+				is_ready = -1
 		if is_instance_valid(target) and target.state != "Dead":
 			position = position.move_toward(target.position, max_speed * delta)
 		else:
@@ -50,9 +50,9 @@ func _physics_process(delta: float) -> void:
 
 func get_closest_target() -> void:
 	var enemy_array = rangebox.get_overlapping_areas()
-	if not enemy_array.empty():
+	if not enemy_array.is_empty():
 		if skill_data["targetCount"][skill_level] == 1:
-			var closest_target: KinematicBody2D
+			var closest_target: CharacterBody2D
 			var closest_target_distance
 			for monster in enemy_array:
 				var monster_body = monster.get_parent()
@@ -118,13 +118,13 @@ func _on_Hitbox_area_entered(area):
 	if skill_data.targetCount[skill_level] == 1:
 		if area.get_parent() == target:
 			hitbox.visible = false
-			ready = -1
+			is_ready = -1
 			monster_hit(area.get_parent())
 	else:
-		if ready > -1:
+		if is_ready > -1:
 			if target_hit.size() == skill_data.targetCount[skill_level]:
 				hitbox.set_deferred("disabled", true)
-				ready = -1
+				is_ready = -1
 			else:
 				if area.get_parent() in target and not area.get_parent() in target_hit:
 					target_hit.append(area.get_parent())
@@ -132,7 +132,7 @@ func _on_Hitbox_area_entered(area):
 
 func monster_hit(monster_container) -> void:
 	Global.calculate_skill_damage(player, monster_container, self)
-	ready = -1
+	is_ready = -1
 
 # warning-ignore:unused_argument
 func _on_Range_area_entered(area):
@@ -141,4 +141,4 @@ func _on_Range_area_entered(area):
 
 
 func _on_Timer_timeout():
-	self.ready = -1
+	self.is_ready = -1

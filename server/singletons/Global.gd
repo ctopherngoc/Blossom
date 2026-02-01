@@ -8,9 +8,9 @@ var rng = RandomNumberGenerator.new()
 var item_scene = preload("res://scenes/instances/Item.tscn")
 const max_int = 9223372036854775807
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-onready var http_requests = []
-onready var maps
-onready var fb_loaded = false
+@onready var http_requests = []
+@onready var maps
+@onready var fb_loaded = false
 
 ######################################################################
 # testing variables
@@ -26,10 +26,9 @@ func _ready() -> void:
 
 func store_character_data(player_id: String, display_name: String) -> void:
 	var player_container = get_node(ServerData.player_location[str(player_id)] + "/%s" % str(player_id))
-	var firebase = Firebase.update_document("characters/%s" % display_name, player_container.db_info.token, player_container.current_character)
-	yield(firebase, 'completed')
+	await Firebase.update_document("characters/%s" % display_name, player_container.db_info.token, player_container.current_character)
 
-func npc_attack(player: KinematicBody2D, monster_stats: Dictionary) -> void:
+func npc_attack(player: CharacterBody2D, monster_stats: Dictionary) -> void:
 	var player_stats = player.current_character.stats
 	if monster_stats.accuracy >= player_stats.base.avoidability + player_stats.equipment.avoidability + player_stats.buff.avoidability:
 		var calculation = monster_stats.attack - player_stats.base.defense + player_stats.equipment.defense + player_stats.buff.defense
@@ -136,7 +135,7 @@ func calculate_stats(player_stats: Dictionary) -> void:
 	else:
 		pass
 
-func npc_hit(dmg_list: Array, npc: KinematicBody2D, player: KinematicBody2D):
+func npc_hit(dmg_list: Array, npc: CharacterBody2D, player: CharacterBody2D):
 	"""
 	change dmg_list to list of lists
 	"""
@@ -243,7 +242,7 @@ func dropGeneration(monster_id: String) -> Dictionary:
 				item_list[item_id] = 1
 	return item_list
 
-func player_drop_item(player_container: KinematicBody2D, position: Vector2, map: String, tab: String, slot: int, quantity: int) -> void:
+func player_drop_item(player_container: CharacterBody2D, position: Vector2, map: String, tab: String, slot: int, quantity: int) -> void:
 	# get item data
 	# create dictionary with item_id: item_dict -> dropspawn requires hashmap of items.keys() dropped
 	var item_data = {player_container.current_character.inventory[tab][slot].id: player_container.current_character.inventory[tab][slot]}
@@ -277,20 +276,19 @@ func dropDetermine(item_id: String) -> bool:
 # warning-ignore:unused_argument
 func dropSpawn(map: String, location: Vector2, item_dict: Dictionary, user_id: String) -> void:
 	# user_id could be string or null
-	var map_path = "/root/Server/World/Maps/" + str(map) + "/YSort/Items"
+	var map_path = "/root/Server/World/Maps/" + str(map) + "/Node2D/Items"
 	var items = item_dict.keys()
 	var map_node = get_node(map_path)
 	for item in items:
-		var new_item = item_scene.instance()
+		var new_item = item_scene.instantiate()
 		new_item.position = location
 		new_item.player_owner = user_id
 		new_item.id = item
 		new_item.map = str(map)
 		var node_name = ""
 		# sets node name to random string of 6 nums/letters
-# warning-ignore:unused_variable
 		for i in range(6):
-			 node_name += chars[randi() % chars.length()]
+			node_name += chars[randi() % chars.length()]
 		new_item.drop_id = node_name
 		new_item.name = new_item.drop_id
 		#set stackable
@@ -308,11 +306,11 @@ func dropSpawn(map: String, location: Vector2, item_dict: Dictionary, user_id: S
 # warning-ignore:unused_argument
 func playerDropSpawn(map: String, location: Vector2, item_dict: Dictionary, quantity: int = 1) -> void:
 	# user_id could be string or null
-	var map_path = "/root/Server/World/Maps/" + str(map) + "/YSort/Items"
+	var map_path = "/root/Server/World/Maps/" + str(map) + "/Node2D/Items"
 	var items = item_dict.keys()
 	var map_node = get_node(map_path)
 	for item in items:
-		var new_item = item_scene.instance()
+		var new_item = item_scene.instantiate()
 		new_item.position = location
 		new_item.id = item
 		new_item.map = str(map)
@@ -320,7 +318,7 @@ func playerDropSpawn(map: String, location: Vector2, item_dict: Dictionary, quan
 		# sets node name to random string of 6 nums/letters
 # warning-ignore:unused_variable
 		for i in range(6):
-			 node_name += chars[randi() % chars.length()]
+			node_name += chars[randi() % chars.length()]
 		new_item.drop_id = node_name
 		new_item.name = new_item.drop_id
 		#set stackable
@@ -335,8 +333,8 @@ func playerDropSpawn(map: String, location: Vector2, item_dict: Dictionary, quan
 			new_item.stackable = item_dict[item]
 		map_node.add_child(new_item, true)
 
-func lootRequest(player: KinematicBody2D, loot_list: Array) -> void:
-	if loot_list.empty():
+func lootRequest(player: CharacterBody2D, loot_list: Array) -> void:
+	if loot_list.is_empty():
 		player.looting = false
 	else:
 		# for item area2d in list of item area2ds
@@ -365,7 +363,7 @@ func lootRequest(player: KinematicBody2D, loot_list: Array) -> void:
 				player.loot_timer.start()
 				break
 
-func lootDrop(player: KinematicBody2D, item_container: KinematicBody2D) -> void:
+func lootDrop(player: CharacterBody2D, item_container: CharacterBody2D) -> void:
 	if item_container.id == "100000":
 		item_container.looted = true
 		# if resulting gold > int variable capacity (max_int), set gold to max_number
@@ -476,20 +474,18 @@ func lootDrop(player: KinematicBody2D, item_container: KinematicBody2D) -> void:
 					server.send_client_notification(int(player.name), 0)
 
 # placeholder functions for item ownership and unique item tracking
-func add_item_database(data_dict: Dictionary, player_container: KinematicBody2D = null) -> void:
+func add_item_database(data_dict: Dictionary, player_container: CharacterBody2D = null) -> void:
 	var path = "items/%s" % (data_dict.id + str(data_dict.uniqueID)) 
-	var firebase = Firebase.update_document(path, player_container.db_info["token"], data_dict)
-	yield(firebase, 'completed')
+	await Firebase.update_document(path, player_container.db_info["token"], data_dict)
 	
 func add_item():
 	if http_requests.size() > 0:
 		var item_argument_array = http_requests[0]
 		http_requests.remove(0)
 		# [item_dict, player]
-		var request = add_item_database(item_argument_array[0], item_argument_array[1])
-		yield(request, "completed")
+		await add_item_database(item_argument_array[0], item_argument_array[1])
 
-func add_item_to_world_state(item: KinematicBody2D, map_id: String) -> void:
+func add_item_to_world_state(item: CharacterBody2D, map_id: String) -> void:
 	# N = drop_id client node name
 	ServerData.items[map_id][item.name] = {"P": item.position, "I": item.id, "D": item.just_dropped}
 	if item.just_dropped == 1:
@@ -500,12 +496,12 @@ func add_item_to_world_state(item: KinematicBody2D, map_id: String) -> void:
 			ServerData.equipmentTable.erase(str(item.stats.id) + str(item.stats.uniqueID))
 		item.queue_free()
 
-func add_projectile_to_world_state(projectile: Sprite, map_id: String) -> void:
+func add_projectile_to_world_state(projectile: Sprite2D, map_id: String) -> void:
 	# N = drop_id client node name
 	ServerData.projectiles[map_id][projectile.name] = {"P": projectile.position, "I": projectile.id}
-	if projectile.ready == 1:
-		projectile.ready = 0
-	elif projectile.ready == -1:
+	if projectile.is_ready == 1:
+		projectile.is_ready = 0
+	elif projectile.is_ready == -1:
 		ServerData.projectiles[map_id].erase(projectile.name)
 		projectile.queue_free()
 
@@ -519,11 +515,11 @@ func remove_projectiles_in_world_state(projectile_list: Array, map_id: String) -
 		if not projectile_list.has(projectile):
 			ServerData.projectiles[map_id].erase(projectile)
 			
-func calculate_skill_damage(player_container: KinematicBody2D, monster_container: KinematicBody2D, projectile_container: Sprite):
+func calculate_skill_damage(player_container: CharacterBody2D, monster_container: CharacterBody2D, projectile_container: Sprite2D):
 	var damage_list = damage_formula(projectile_container.skill_data.damageType, player_container.current_character, monster_container.stats, projectile_container.skill_data.hitAmount[projectile_container.skill_level], projectile_container.skill_data.stat.damagePercent[projectile_container.skill_level])
 	npc_hit(damage_list, monster_container, player_container)
 
-func cancel_buff(player_container: KinematicBody2D, skill_id: String):
+func cancel_buff(player_container: CharacterBody2D, skill_id: String):
 	# get skill level
 	var player_skill_data = player_container.current_character.skills[ServerData.skill_class_dictionary[skill_id].location[0]][ServerData.skill_class_dictionary[skill_id].location[1]]
 	var skill_data = ServerData.skill_data[ServerData.skill_class_dictionary[skill_id].location[0]][ServerData.skill_class_dictionary[skill_id].location[1]]

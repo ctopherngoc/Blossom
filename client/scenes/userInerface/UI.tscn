@@ -16,10 +16,10 @@
 [ext_resource path="res://scenes/userInerface/MessageBar.tscn" type="PackedScene" id=14]
 [ext_resource path="res://scenes/userInerface/Dialog.tscn" type="PackedScene" id=15]
 
-[sub_resource type="DynamicFontData" id=1]
+[sub_resource type="FontFile" id=1]
 font_path = "res://assets/fonts/xolonium/xolonium-fonts-4.1/ttf/Xolonium-Regular.ttf"
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="FontFile" id=2]
 size = 8
 outline_size = 1
 outline_color = Color( 0, 0, 0, 1 )
@@ -40,9 +40,9 @@ anchor_left = 0.0179687
 anchor_top = 0.558333
 anchor_right = 0.0179687
 anchor_bottom = 0.558333
-margin_top = -93.0
-margin_right = 267.0
-margin_bottom = 93.0
+offset_top = -93.0
+offset_right = 267.0
+offset_bottom = 93.0
 
 [node name="Inventory" parent="Control" instance=ExtResource( 4 )]
 visible = false
@@ -50,9 +50,9 @@ anchor_left = 1.0625
 anchor_top = 0.0555555
 anchor_right = 1.0625
 anchor_bottom = 0.0555556
-margin_left = -296.0
-margin_bottom = 432.0
-rect_scale = Vector2( 0.7, 0.7 )
+offset_left = -296.0
+offset_bottom = 432.0
+scale = Vector2( 0.7, 0.7 )
 
 [node name="Skills" parent="Control" instance=ExtResource( 9 )]
 visible = false
@@ -60,9 +60,9 @@ anchor_left = 0.199219
 anchor_top = 0.0305556
 anchor_right = 0.363
 anchor_bottom = 0.521
-margin_right = 88.3588
-margin_bottom = 152.88
-rect_scale = Vector2( 0.7, 0.7 )
+offset_right = 88.3588
+offset_bottom = 152.88
+scale = Vector2( 0.7, 0.7 )
 
 [node name="KeyBinds" parent="Control" instance=ExtResource( 10 )]
 visible = false
@@ -73,11 +73,11 @@ anchor_left = 0.01875
 anchor_top = 0.0333333
 anchor_right = 0.01875
 anchor_bottom = 0.0333333
-margin_left = 0.0
-margin_top = 0.0
-margin_right = 306.0
-margin_bottom = 509.0
-rect_scale = Vector2( 0.7, 0.7 )
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 306.0
+offset_bottom = 509.0
+scale = Vector2( 0.7, 0.7 )
 
 [node name="QuestLog" parent="Control" instance=ExtResource( 8 )]
 visible = false
@@ -87,24 +87,24 @@ anchor_right = 0.667562
 anchor_bottom = 0.327333
 
 [node name="ChatBox" parent="Control" instance=ExtResource( 7 )]
-margin_top = -134.0
-margin_bottom = -102.0
+offset_top = -134.0
+offset_bottom = -102.0
 __meta__ = {
 "_edit_use_anchors_": true
 }
 
 [node name="MessageBar" parent="Control" instance=ExtResource( 14 )]
-margin_top = 616.0
-margin_bottom = 640.0
+offset_top = 616.0
+offset_bottom = 640.0
 __meta__ = {
 "_edit_use_anchors_": true
 }
 
 [node name="ButtonBar" parent="Control" instance=ExtResource( 13 )]
-margin_left = 625.0
-margin_top = 616.0
-margin_right = 1280.0
-margin_bottom = 640.0
+offset_left = 625.0
+offset_top = 616.0
+offset_right = 1280.0
+offset_bottom = 640.0
 
 [node name="PlayerHUD" parent="Control" instance=ExtResource( 1 )]
 anchor_left = 0.00078125
@@ -115,10 +115,10 @@ __meta__ = {
 
 [node name="InGameMenu" parent="Control" instance=ExtResource( 3 )]
 visible = false
-margin_left = 18.0
-margin_top = 19.0
-margin_right = -22.0
-margin_bottom = -21.0
+offset_left = 18.0
+offset_top = 19.0
+offset_right = -22.0
+offset_bottom = -21.0
 mouse_filter = 2
 
 [node name="DebuggerWindow" parent="Control" instance=ExtResource( 11 )]
@@ -126,34 +126,34 @@ mouse_filter = 2
 [node name="GameInfo" type="Control" parent="Control"]
 anchor_left = 1.0
 anchor_right = 1.0
-margin_left = -121.0
-margin_top = 5.0
-margin_bottom = 19.0
+offset_left = -121.0
+offset_top = 5.0
+offset_bottom = 19.0
 mouse_filter = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/GameInfo"]
-margin_right = 121.0
-margin_bottom = 14.0
+offset_right = 121.0
+offset_bottom = 14.0
 size_flags_horizontal = 3
 alignment = 1
 
 [node name="FPSCounter" type="Label" parent="Control/GameInfo/HBoxContainer"]
-margin_left = 2.0
-margin_top = 1.0
-margin_right = 45.0
-margin_bottom = 12.0
+offset_left = 2.0
+offset_top = 1.0
+offset_right = 45.0
+offset_bottom = 12.0
 mouse_filter = 1
-custom_fonts/font = SubResource( 2 )
+theme_override_fonts/font = SubResource( 2 )
 text = "FPS: 500	"
 align = 2
 
 [node name="PingCounter" type="Label" parent="Control/GameInfo/HBoxContainer"]
-margin_left = 49.0
-margin_top = 1.0
-margin_right = 118.0
-margin_bottom = 12.0
+offset_left = 49.0
+offset_top = 1.0
+offset_right = 118.0
+offset_bottom = 12.0
 mouse_filter = 1
-custom_fonts/font = SubResource( 2 )
+theme_override_fonts/font = SubResource( 2 )
 text = "Ping: 1500 ms"
 align = 2
 

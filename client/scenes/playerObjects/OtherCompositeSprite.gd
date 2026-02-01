@@ -1,51 +1,51 @@
 extends Node2D
 
-onready var normal = $Normal
-onready var normal_anim = $Normal/AnimationPlayer
-onready var ammo = $Normal/Ammo
-onready var body = $Normal/Body
-onready var bottom = $Normal/Bottom
-onready var brow = $Normal/Brow
-onready var eye = $Normal/Eye
-onready var eyeacc = $Normal/Eyeacc
-onready var faceacc = $Normal/Faceacc
-onready var hair = $Normal/Hair
-onready var head = $Normal/Head
-onready var headgear  = $Normal/Headgear
-onready var larm = $Normal/Larm
-onready var lear = $Normal/Lear
-onready var learring = $Normal/Learring
-onready var lfinger = $Normal/Lfinger
-onready var lglove = $Normal/LGlove
-onready var lhand = $Normal/Lhand
-onready var lleg = $Normal/Lleg
-onready var lwep = $Normal/LWeapon
-onready var mouth = $Normal/Mouth
-onready var rarm = $Normal/Rarm
-onready var rear = $Normal/Rear
-onready var rearring = $Normal/Rearring
-onready var rglove = $Normal/RGlove
-onready var rhand = $Normal/Rhand
-onready var rleg = $Normal/Rleg
-onready var rwep = $Normal/Rweapon
-onready var top = $Normal/Top
-onready var tattoo = $Normal/Tattoo
-onready var pocket = $Normal/Pocket
+@onready var normal = $Normal
+@onready var normal_anim = $Normal/AnimationPlayer
+@onready var ammo = $Normal/Ammo
+@onready var body = $Normal/Body
+@onready var bottom = $Normal/Bottom
+@onready var brow = $Normal/Brow
+@onready var eye = $Normal/Eye
+@onready var eyeacc = $Normal/Eyeacc
+@onready var faceacc = $Normal/Faceacc
+@onready var hair = $Normal/Hair
+@onready var head = $Normal/Head
+@onready var headgear  = $Normal/Headgear
+@onready var larm = $Normal/Larm
+@onready var lear = $Normal/Lear
+@onready var learring = $Normal/Learring
+@onready var lfinger = $Normal/Lfinger
+@onready var lglove = $Normal/LGlove
+@onready var lhand = $Normal/Lhand
+@onready var lleg = $Normal/Lleg
+@onready var lwep = $Normal/LWeapon
+@onready var mouth = $Normal/Mouth
+@onready var rarm = $Normal/Rarm
+@onready var rear = $Normal/Rear
+@onready var rearring = $Normal/Rearring
+@onready var rglove = $Normal/RGlove
+@onready var rhand = $Normal/Rhand
+@onready var rleg = $Normal/Rleg
+@onready var rwep = $Normal/Rweapon
+@onready var top = $Normal/Top
+@onready var tattoo = $Normal/Tattoo
+@onready var pocket = $Normal/Pocket
 
-onready var climb_sprite = $Climb
-onready var climb_anim = $Climb/AnimationPlayer
-onready var climb_ammo = $Climb/Ammo
-onready var climb_body = $Climb/Body
-onready var climb_bottom = $Climb/Bottom
-onready var climb_hair = $Climb/Hair
-onready var climb_headgear  = $Climb/Headgear
-onready var climb_ears = $Climb/Ears
-onready var climb_earrings = $Climb/Earrings
-onready var climb_gloves = $Climb/Gloves
-onready var climb_top = $Climb/Top
+@onready var climb_sprite = $Climb
+@onready var climb_anim = $Climb/AnimationPlayer
+@onready var climb_ammo = $Climb/Ammo
+@onready var climb_body = $Climb/Body
+@onready var climb_bottom = $Climb/Bottom
+@onready var climb_hair = $Climb/Hair
+@onready var climb_headgear  = $Climb/Headgear
+@onready var climb_ears = $Climb/Ears
+@onready var climb_earrings = $Climb/Earrings
+@onready var climb_gloves = $Climb/Gloves
+@onready var climb_top = $Climb/Top
 
 # no rfinger
-onready var sprite_dict = {
+@onready var sprite_dict = {
 	"ammo" : ammo,
 	"body" : body,
 	"bottom": bottom,
@@ -69,7 +69,7 @@ onready var sprite_dict = {
 	"larm": larm,
 }
 
-onready var climb_sprite_dict = {
+@onready var climb_sprite_dict = {
 	"ammo" : climb_ammo,
 	"body" : climb_body,
 	"bottom": climb_bottom,
@@ -79,7 +79,7 @@ onready var climb_sprite_dict = {
 	"top": climb_top,
 }
 
-onready var item_map = {
+@onready var item_map = {
 	7: "headgear",
 	8: "top",
 	9: "bottom",

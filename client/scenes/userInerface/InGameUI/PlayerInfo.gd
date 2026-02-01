@@ -3,25 +3,25 @@ extends Control
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 # warning-ignore:return_value_discarded
-	Signals.connect("update_health", self, "update_health")
+	Signals.connect("update_health", Callable(self, "update_health"))
 # warning-ignore:return_value_discarded
-	Signals.connect("update_mana", self, "update_mana")
+	Signals.connect("update_mana", Callable(self, "update_mana"))
 # warning-ignore:return_value_discarded
-	Signals.connect("update_level", self, "update_level")
+	Signals.connect("update_level", Callable(self, "update_level"))
 # warning-ignore:return_value_discarded
-	Signals.connect("update_exp", self, "update_exp")
+	Signals.connect("update_exp", Callable(self, "update_exp"))
 # warning-ignore:return_value_discarded
-	Signals.connect("update_displayname", self, "update_displayname")
+	Signals.connect("update_displayname", Callable(self, "update_displayname"))
 	load_info()
 
 #have to round to whole numbers
 func update_health() -> void:
 	$Control/HBoxContainer/fillBars/hpmpBar/HealthVBar/Control/Number.text = str(Global.player.stats.base.health) + "/" + str(Global.player.stats.base.maxHealth)
-	$Control/HBoxContainer/fillBars/hpmpBar/HealthVBar/Control/TextureProgress.value = (float(Global.player.stats.base.health) / float(Global.player.stats.base.maxHealth))* 100
+	$Control/HBoxContainer/fillBars/hpmpBar/HealthVBar/Control/TextureProgressBar.value = (float(Global.player.stats.base.health) / float(Global.player.stats.base.maxHealth))* 100
 #have to round to whole numbers
 func update_mana() -> void:
 	$Control/HBoxContainer/fillBars/hpmpBar/MPVBar/Control/Number.text = str(Global.player.stats.base.mana) + "/" + str(Global.player.stats.base.maxMana)
-	$Control/HBoxContainer/fillBars/hpmpBar/MPVBar/Control/TextureProgress.value = float((Global.player.stats.base.mana) / float(Global.player.stats.base.maxMana)) * 100
+	$Control/HBoxContainer/fillBars/hpmpBar/MPVBar/Control/TextureProgressBar.value = float((Global.player.stats.base.mana) / float(Global.player.stats.base.maxMana)) * 100
 
 func update_level() -> void:
 	$Control/HBoxContainer/characterInfo/LVLHBox/Number.text = str(Global.player.stats.base.level)
@@ -30,7 +30,7 @@ func update_level() -> void:
 func update_exp() -> void:
 	var exp_percent = (float(Global.player.stats.base.experience) / float(GameData.experience_table[str(Global.player.stats.base.level)])) * 100
 	$Control/HBoxContainer/fillBars/EXPVBar/Control/Number.text = str(Global.player.stats.base.experience) + "/" + str(GameData.experience_table[str(Global.player.stats.base.level)]) + ("%10.2f" % exp_percent) + "%"
-	$Control/HBoxContainer/fillBars/EXPVBar/Control/TextureProgress.value = exp_percent
+	$Control/HBoxContainer/fillBars/EXPVBar/Control/TextureProgressBar.value = exp_percent
 
 func update_displayname() -> void:
 	$Control/HBoxContainer/characterInfo/username.text = str(Global.player.displayname)
@@ -55,5 +55,5 @@ func _can_drop_data(pos: Vector2, data) -> bool:
 # warning-ignore:unused_argument
 # warning-ignore:unused_argument
 func _drop_data(pos: Vector2, data) -> void:
-	print("in ui drop_data")
+	print("in ui _drop_data")
 

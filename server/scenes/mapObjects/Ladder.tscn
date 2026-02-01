@@ -11,10 +11,10 @@ collision_mask = 256
 script = ExtResource( 2 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
-margin_left = -2.0
-margin_top = -297.0
-margin_right = 2.0
-margin_bottom = -36.0
+offset_left = -2.0
+offset_top = -297.0
+offset_right = 2.0
+offset_bottom = -36.0
 mouse_filter = 2
 color = Color( 0.0313726, 0, 1, 1 )
 

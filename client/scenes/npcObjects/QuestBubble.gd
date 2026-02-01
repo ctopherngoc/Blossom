@@ -1,7 +1,7 @@
-extends Sprite
+extends Sprite2D
 
-onready var avaliable_texture = "res://assets/npcSprites/npcBubbleSprites/QuestBubbleSprite.png"
-onready var active_texture ="res://assets/npcSprites/npcBubbleSprites/ActiveQuestBubbleSprite.png"
+@onready var avaliable_texture = "res://assets/npcSprites/npcBubbleSprites/QuestBubbleSprite.png"
+@onready var active_texture ="res://assets/npcSprites/npcBubbleSprites/ActiveQuestBubbleSprite.png"
 
 func _ready():
 	pass

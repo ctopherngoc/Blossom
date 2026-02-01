@@ -1,12 +1,12 @@
 extends Control
 
 var drag_position = null
-signal move_to_top
+signal move_before
 
-onready var empty_bg = "res://assets/UI/background/hotkey_background.png"
-onready var active_bg = "res://assets/UI/backgroundSource/Red.png"
+@onready var empty_bg = "res://assets/UI/background/hotkey_background.png"
+@onready var active_bg = "res://assets/UI/backgroundSource/Red.png"
 
-onready var keybind_list = {
+@onready var keybind_list = {
 	'esc': $NinePatchRect/MarginContainer/VBoxContainer/HBoxContainer/SetKeyBinds/GridContainer/esc,
 	'f1': $NinePatchRect/MarginContainer/VBoxContainer/HBoxContainer/SetKeyBinds/GridContainer/f1,
 	'f2': $NinePatchRect/MarginContainer/VBoxContainer/HBoxContainer/SetKeyBinds/GridContainer/f2,
@@ -92,7 +92,7 @@ onready var keybind_list = {
 	"right": $NinePatchRect/MarginContainer/VBoxContainer/HBoxContainer/SetKeyBinds/GridContainer6/right,
 	}
 	
-onready var default_keybind_nodes = {
+@onready var default_keybind_nodes = {
 	"attack": $NinePatchRect/MarginContainer/VBoxContainer/UnsetKeyBinds/VBoxContainer/GridContainer/attack,
 	"loot": $NinePatchRect/MarginContainer/VBoxContainer/UnsetKeyBinds/VBoxContainer/GridContainer/loot,
 	"stat": $NinePatchRect/MarginContainer/VBoxContainer/UnsetKeyBinds/VBoxContainer/GridContainer/stat,
@@ -102,22 +102,22 @@ onready var default_keybind_nodes = {
 	#"test": $NinePatchRect/MarginContainer/VBoxContainer/UnsetKeyBinds/VBoxContainer/GridContainer/test,
 	}
 
-onready var unbound_default_keybind = []
+@onready var unbound_default_keybind = []
 	
-onready var default_keybind_key = {
+@onready var default_keybind_key = {
 	"backslash": "keybind",
 	"lalt": "jump",
 	"ralt": "jump",
 	"esc": "menu",
 	
 	}
-onready var hotkey_list = ['shift', 'ins', 'home', 'pgup', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'ctrl', 'del', 'end', 'pgdn', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12']
+@onready var hotkey_list = ['shift', 'ins', 'home', 'pgup', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'ctrl', 'del', 'end', 'pgdn', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12']
 
 func _ready():
 	for key in default_keybind_nodes.keys():
 		unbound_default_keybind.append(key)
 	# warning-ignore:return_value_discarded
-	Signals.connect("toggle_keybinds", self, "toggle_keybinds")
+	Signals.connect("toggle_keybinds", Callable(self, "toggle_keybinds"))
 	populate_key_labels()
 
 func toggle_keybinds() -> void:
@@ -128,12 +128,12 @@ func _on_KeyBinds_gui_input(event):
 		# left mouse button
 		if event.pressed && event.get_button_index() == 1:
 			#print("left mouse button")
-			drag_position = get_global_mouse_position() - rect_global_position
-			emit_signal('move_to_top', self)
+			drag_position = get_global_mouse_position() - global_position
+			emit_signal('move_before', self)
 		else:
 			drag_position = null
 	if event is InputEventMouseMotion and drag_position:
-		rect_global_position = get_global_mouse_position() - drag_position
+		global_position = get_global_mouse_position() - drag_position
 
 func populate_key_labels() -> void:
 	for key in keybind_list.keys():
@@ -177,12 +177,12 @@ func populate_key_labels() -> void:
 		else:
 			#print(key)
 			default_keybind_nodes[key].label.text = key
-		default_keybind_nodes[key].label.rect_min_size = Vector2(30,30)
+		default_keybind_nodes[key].label.custom_minimum_size = Vector2(30,30)
 		
 func to_gray_scale(texture):
 	var image: = Image.new()
 	image = texture.get_data()
-	image.lock()
+	false # image.lock() # TODOConverter3To4, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 	for x in texture.get_size().x:
 		for y in texture.get_size().y:
 			var current_pixel = image.get_pixel(x,y)
@@ -190,7 +190,7 @@ func to_gray_scale(texture):
 				current_pixel = current_pixel.gray()
 				var new_color = Color.from_hsv(0, 0, current_pixel)
 				image.set_pixel(x, y, new_color)
-	image.unlock()
+	false # image.unlock() # TODOConverter3To4, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
 	
 	var image_texture = ImageTexture.new()
 	image_texture.create_from_image(image)
@@ -238,7 +238,7 @@ func populate_keybinds(keybinds: Dictionary) -> void:
 					
 			# skill or item
 			else:
-				if keybind_list[key].is_valid_integer():
+				if keybind_list[key].is_valid_int():
 						if keybind_list[key] in GameData.skill_class_dictionary:
 							pass
 							# get skill location

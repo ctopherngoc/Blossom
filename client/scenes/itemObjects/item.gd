@@ -1,9 +1,9 @@
 extends Node2D
-onready var id
-onready var item_type
-onready var sprite_node = $Sprite
-onready var animation_player = $AnimationPlayer
-onready var spite_path = {
+@onready var id
+@onready var item_type
+@onready var sprite_node = $Sprite2D
+@onready var animation_player = $AnimationPlayer
+@onready var spite_path = {
 	"etc": "res://assets/itemSprites/etcItems/",
 	"equipment": "res://assets/itemSprites/equipItems/",
 	"use": "res://assets/itemSprites/useItems/",}

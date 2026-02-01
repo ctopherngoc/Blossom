@@ -1,41 +1,41 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene format=3 uid="uid://dmjgwwedj32ti"]
 
-[ext_resource path="res://scenes/skillObjects/Projectile.gd" type="Script" id=1]
+[ext_resource type="Script" uid="uid://dus7pvta1h8rd" path="res://scenes/skillObjects/Projectile.gd" id="1"]
 
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 199, 99 )
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(398, 198)
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 16, 16 )
+[sub_resource type="RectangleShape2D" id="2"]
+size = Vector2(32, 32)
 
-[node name="0" type="Sprite"]
-script = ExtResource( 1 )
+[node name="0" type="Sprite2D" unique_id=2006086123]
+script = ExtResource("1")
 
-[node name="Range" type="Area2D" parent="."]
+[node name="Range" type="Area2D" parent="." unique_id=841070713]
 collision_layer = 0
 collision_mask = 32
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Range"]
-modulate = Color( 1, 0.94902, 0, 1 )
-position = Vector2( 1, 1 )
-shape = SubResource( 1 )
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Range" unique_id=546166688]
+modulate = Color(1, 0.94902, 0, 1)
+position = Vector2(1, 1)
+shape = SubResource("1")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-margin_left = -16.0
-margin_top = -16.0
-margin_right = 16.0
-margin_bottom = 16.0
-rect_min_size = Vector2( 32, 32 )
+[node name="ColorRect" type="ColorRect" parent="." unique_id=822421560]
+custom_minimum_size = Vector2(32, 32)
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." unique_id=308841158]
 collision_layer = 0
 collision_mask = 32
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
-modulate = Color( 1, 0.0901961, 1, 1 )
-shape = SubResource( 2 )
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=247480664]
+modulate = Color(1, 0.0901961, 1, 1)
+shape = SubResource("2")
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=877635097]
 wait_time = 2.0
 one_shot = true
 autostart = true

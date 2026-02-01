@@ -1,25 +1,25 @@
-extends Sprite
+extends Sprite2D
 
-onready var id = "100001"
-onready var data = GameData.npcTable[self.id]
-onready var sprite = preload("res://assets/npcSprites/100001/100001.png")
-onready var spriteW = preload("res://assets/npcSprites/100001/100001w.png")
-onready var avaliable_texture = preload("res://assets/npcSprites/npcBubbleSprites/QuestBubbleSprite.png")
-onready var active_texture = preload("res://assets/npcSprites/npcBubbleSprites/ActiveQuestBubbleSprite.png")
+@onready var id = "100001"
+@onready var data = GameData.npcTable[self.id]
+@onready var sprite = preload("res://assets/npcSprites/100001/100001.png")
+@onready var spriteW = preload("res://assets/npcSprites/100001/100001w.png")
+@onready var avaliable_texture = preload("res://assets/npcSprites/npcBubbleSprites/QuestBubbleSprite.png")
+@onready var active_texture = preload("res://assets/npcSprites/npcBubbleSprites/ActiveQuestBubbleSprite.png")
 
-onready var label = $Label
-onready var anim = $AnimationPlayer
-onready var dialog_index = 0
-onready var dialog_bubble = $ChatBox
-onready var dialog_timer = $DialogTimer
-onready var quest_bubble = $QuestBubble
+@onready var label = $Label
+@onready var anim = $AnimationPlayer
+@onready var dialog_index = 0
+@onready var dialog_bubble = $ChatBox
+@onready var dialog_timer = $DialogTimer
+@onready var quest_bubble = $QuestBubble
 
-onready var dialog_box = preload("res://scenes/userInerface/Dialog.tscn")
+@onready var dialog_box = preload("res://scenes/userInerface/Dialog.tscn")
 
 #var clicked = false
 
 func _ready() -> void:
-	Signals.connect("update_quest_log", self, "update_bubble")
+	Signals.connect("update_quest_log", Callable(self, "update_bubble"))
 	label.text = data.name
 	dialog_timer.start()
 	update_bubble()
@@ -27,7 +27,7 @@ func _ready() -> void:
 func _on_Area2D_input_event(viewport, event, shape_idx) -> void:
 	#if can_interact:
 	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			print("popup dialog for npc")
 			Signals.emit_signal("toggle_dialog", self.id)
 			

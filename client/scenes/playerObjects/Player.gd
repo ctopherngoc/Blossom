@@ -1,34 +1,34 @@
-extends KinematicBody2D
+extends CharacterBody2D
 
-onready var velocity_multiplier = 1
+@onready var velocity_multiplier = 1
 # dynamic player variables
 
-onready var velocity = Vector2.ZERO
-onready var camera = $Camera2D
-onready var last_input = null
+@onready var velocity = Vector2.ZERO
+@onready var camera = $Camera2D
+@onready var last_input = null
 
 # static player varaibles
-onready var gravity = 0
+@onready var gravity = 0
 
 # player states
-onready var can_climb = false
-onready var is_climbing = false
-onready var attacking = false
-onready var player_state
-onready var sprite = $CompositeSprite
-onready var chat_box = $ChatBox
+@onready var can_climb = false
+@onready var is_climbing = false
+@onready var attacking = false
+@onready var player_state
+@onready var sprite = $CompositeSprite
+@onready var chat_box = $ChatBox
 
 var floating_text = preload("res://scenes/userInerface/FloatingText.tscn")
-onready var input
-onready var hit_timer = $Timer
-onready var label = $Label
+@onready var input
+@onready var hit_timer = $Timer
+@onready var label = $Label
 
-onready var horizontal_speed: int
-onready var vertical_speed: int
-onready var dmg_number_height = -15
+@onready var horizontal_speed: int
+@onready var vertical_speed: int
+@onready var dmg_number_height = -15
 #########
 #Temp
-onready var recon_arr = {
+@onready var recon_arr = {
 	"input_arr": [],
 	"velocity": Vector2(0,0),
 	"mns": null,
@@ -40,13 +40,13 @@ onready var recon_arr = {
 func _ready():
 	gravity = 800
 	# warning-ignore:return_value_discarded
-	Signals.connect("dialog_closed", self, "movable_switch")
+	Signals.connect("dialog_closed", Callable(self, "movable_switch"))
 # warning-ignore:return_value_discarded
-	Signals.connect("attack", self, "attack")
+	Signals.connect("attack", Callable(self, "attack"))
 # warning-ignore:return_value_discarded
-	Signals.connect("use_skill", self, "use_skill")
+	Signals.connect("use_skill", Callable(self, "use_skill"))
 # warning-ignore:return_value_discarded
-	Signals.connect("take_damage", self, "start_hit_timer")
+	Signals.connect("take_damage", Callable(self, "start_hit_timer"))
 	Global.player_node = self
 	Global.in_game = true
 	label.text = Global.player.displayname
@@ -103,12 +103,20 @@ func movement_loop(delta, input_arr):
 	recon_arr["velocity"] = velocity
 	# warning-ignore:return_value_discarded
 	recon_arr["start_pos"] = self.global_position
-	move_and_slide(velocity, Vector2.UP)
-	recon_arr["mns"] = move_and_slide(velocity, Vector2.UP)
+	set_velocity(velocity)
+	set_up_direction(Vector2.UP)
+	move_and_slide()
+	set_velocity(velocity)
+	set_up_direction(Vector2.UP)
+	move_and_slide()
+	recon_arr["mns"] = velocity
 	recon_arr["end_pos"] = self.global_position
 	
 	if is_on_floor() or !is_climbing:
-		velocity = move_and_slide(velocity, Vector2.UP)
+		set_velocity(velocity)
+		set_up_direction(Vector2.UP)
+		move_and_slide()
+		velocity = velocity
 	if is_climbing:
 		sprite.set_climb()
 		velocity.x = 0
@@ -268,13 +276,13 @@ func change_direction():
 		flip_sprite(true)
 
 func heal(heal_value: int) -> void:
-	var text = floating_text.instance()
+	var text = floating_text.instantiate()
 	text.type = "PH"
 	text.amount = str(heal_value)
 	add_child(text)
 	
 func took_damage(damage_value: int) -> void:
-	var text = floating_text.instance()
+	var text = floating_text.instantiate()
 	text.position.y = dmg_number_height
 	text.type = "PN"
 	text.amount = str(damage_value)
