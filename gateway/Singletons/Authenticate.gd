@@ -9,13 +9,19 @@ func _ready():
 	
 func connect_to_server():
 	network.create_client(ip, port)
-	get_tree().set_multiplayer_peer(network)
+	multiplayer.multiplayer_peer = network
 	
-	network.connect("connection_failed", Callable(self, "_OnConnectionFailed"))
-	network.connect("connection_succeeded", Callable(self, "_OnConnectionSucceeded"))
+	match network.get_connection_status():
+		MultiplayerPeer.CONNECTION_CONNECTED:
+			print("Successfully connected to authentication server")
+		MultiplayerPeer.CONNECTION_DISCONNECTED:
+			print("Disconnected from authentication server")
+	
+func _OnConnectionDisconnect():
+	print("Disconnected from authentication server")
 	
 func _OnConnectionFailed():
-	print("Failed to conect to authentication server")
+	print("Failed to connect to authentication server")
 
 func _OnConnectionSucceeded():
 	print("Successfully connected to authentication server")

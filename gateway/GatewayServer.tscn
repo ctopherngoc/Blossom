@@ -1,8 +1,8 @@
-[gd_scene format=2]
+[gd_scene format=3 uid="uid://3bxcssascre3"]
 
-[node name="GatewayServer" type="Node"]
+[node name="GatewayServer" type="Node" unique_id=1041410168]
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=1775985856]
 offset_left = 23.0
 offset_top = 36.0
 offset_right = 63.0

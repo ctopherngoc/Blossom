@@ -10,15 +10,12 @@ func connect_to_server() -> void:
 	print("attempting to connect to game server hub")
 	network.create_client(ip, port)
 	multiplayer.multiplayer_peer = network
-
-	network.connect("connection_failed", Callable(self, "_OnConnectionFailed"))
-	network.connect("connection_succeeded", Callable(self, "_OnConnectionSucceeded"))
-
-func _OnConnectionFailed() -> void:
-	print("Failed to connect to Game Server Hub")
-
-func _OnConnectionSucceeded() -> void:
-	print("Successfully connected to Game Server Hub")
+	
+	match network.get_connection_status():
+		MultiplayerPeer.CONNECTION_CONNECTED:
+			print("Successfully connected to Game Server Hub")
+		MultiplayerPeer.CONNECTION_DISCONNECTED:
+			print("Disconnected from Game Server Hub")
 
 @rpc("any_peer") func received_login_token(token):
 	server.expected_tokens.append(token)
